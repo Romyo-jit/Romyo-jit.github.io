@@ -1,4 +1,4 @@
-# Romyojit Paul — Personal Portfolio
+# Personal Portfolio
 
 A personal portfolio website built to showcase my projects, technical interests, skills, and progress as a developer.
 
