@@ -480,24 +480,8 @@ h2 {
   .atom-toggle { display: none; }
 }
 @media (max-width: 820px) {
-  .hero {
-    min-height: 520px;
-  }
-  .hero-copy {
-    padding-bottom: 11rem;
-  }
   .hero-orbit {
-    display: block;
-    right: 1rem;
-    top: auto;
-    bottom: 1rem;
-    width: clamp(130px, 34vw, 180px);
-  }
-}
-@media (max-width: 600px) {
-  .hero-orbit {
-    right: 1rem;
-    left: auto;
+    display: none;
   }
 }
 
