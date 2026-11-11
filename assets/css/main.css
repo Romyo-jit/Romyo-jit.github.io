@@ -337,24 +337,6 @@ h1 .hero-handle {
 .hero-image { position: absolute; inset: 0; z-index: -1; }
 .hero-image img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 1.6rem;
-}
-.stats div {
-  display: flex;
-  align-items: center;
-  gap: clamp(.65rem, 2vw, 1.35rem);
-  padding: 1rem clamp(.8rem, 2.5vw, 2rem);
-  background: var(--highlight);
-}
-.stats div + div { border-left: var(--line); }
-.stats div:nth-child(2) { background: var(--cool); }
-.stats div:nth-child(3) { background: var(--warm); }
-.stats strong { font: clamp(2rem, 4.5vw, 3.6rem)/1 var(--display); letter-spacing: -.08em; }
-.stats span { font: 600 .82rem/1.35 var(--mono); }
-
 .section { margin-block: clamp(3.75rem, 9vw, 7rem); }
 h2 {
   margin-bottom: 1.1rem;
@@ -486,8 +468,6 @@ h2 {
   .hero, .about, .learning, .section-heading, .skills { grid-template-columns: 1fr; }
   h1 { font-size: clamp(4rem, 18vw, 6rem); }
   .hero { min-height: 400px; }
-  .stats div { flex-direction: column; align-items: flex-start; gap: .45rem; padding: .65rem .45rem .65rem .6rem; }
-  .stats span { font-size: .69rem; }
   .section-heading { gap: .6rem; }
   .portrait { max-width: 28rem; }
   .project { grid-template-columns: 1fr; }
@@ -743,8 +723,6 @@ h2 {
 }
 .portrait figcaption { font: italic 1.25rem/1.35 var(--serif); }
 .portrait figcaption span { rotate: -10deg; font-size: 1.2rem; }
-.stats { rotate: -.35deg; }
-.stats div:nth-child(2) strong { rotate: 4deg; }
 .profile-facts div:last-child dd { width: fit-content; position: relative; }
 .profile-facts div:last-child dd::after {
   content: "";
@@ -759,7 +737,6 @@ h2 {
 .project:nth-child(3n + 2) .tools li:last-child { rotate: 1.5deg; }
 @media (max-width: 600px) {
   .portrait { rotate: .6deg; box-shadow: 4px 4px 0 var(--ink); }
-  .stats { rotate: 0deg; }
 }
 
 
@@ -1002,7 +979,7 @@ h2 {
   .learning h2:hover { text-shadow: 3px 3px 0 var(--ink); }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  main :is(h1, h2, h3, p, figcaption, dt, dd, .skill label, .stats strong, .stats span, .tools li) {
+  main :is(h1, h2, h3, p, figcaption, dt, dd, .skill label, .tools li) {
     transform-origin: left center;
     transition: translate 220ms ease, rotate 220ms ease, text-shadow 220ms ease;
   }
@@ -1012,12 +989,6 @@ h2 {
   }
   main :is(p, figcaption, dt, dd):hover { translate: 2px 0; }
   .skill:hover label { translate: 0 -2px; }
-  .stats div:hover strong {
-    translate: 0 -4px;
-    rotate: -3deg;
-    text-shadow: 2px 2px 0 var(--white);
-  }
-  .stats div:hover span { translate: 2px 0; }
   .tools li:hover { translate: 0 -3px; rotate: 0deg; }
   .section-heading h2::after, .about h2::after, #contact > h2::after {
     transition: scale 220ms ease, rotate 220ms ease;

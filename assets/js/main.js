@@ -304,35 +304,6 @@
   updateTyping();
   reducedMotion.addEventListener("change", updateTyping);
 
-  const counters = [...document.querySelectorAll(".stats strong")].map(element => ({
-    element,
-    value: Number(element.textContent)
-  }));
-  let counterFrame;
-  let countersStarted = false;
-
-  function finishCounters() {
-    cancelAnimationFrame(counterFrame);
-    counters.forEach(({ element, value }) => { element.textContent = value; });
-  }
-
-  function animateCounters() {
-    if (countersStarted) return;
-    countersStarted = true;
-    const start = performance.now();
-    counters.forEach(({ element, value }) => element.setAttribute("aria-label", String(value)));
-
-    function update(now) {
-      const progress = Math.min((now - start) / 950, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      counters.forEach(({ element, value }) => {
-        element.textContent = Math.round(value * eased);
-      });
-      if (progress < 1) counterFrame = requestAnimationFrame(update);
-    }
-    counterFrame = requestAnimationFrame(update);
-  }
-
   if (!("IntersectionObserver" in window) || !Element.prototype.animate) return;
 
   const observer = new IntersectionObserver(entries => {
@@ -350,12 +321,11 @@
         easing: "cubic-bezier(0.22, 1, 0.36, 1)"
       });
       if (target.classList.contains("skills")) target.classList.add("skills-revealed");
-      if (target.classList.contains("stats")) animateCounters();
     });
   }, { threshold: 0.08 });
 
   document.querySelectorAll(
-    ".hero-copy > *, .stats, .about-copy, .portrait, " +
+    ".hero-copy > *, .about-copy, .portrait, " +
     ".section-heading, .skills, .project, .learning, #contact > h2, .contact"
   ).forEach(element => observer.observe(element));
 
@@ -363,6 +333,5 @@
   reducedMotion.addEventListener("change", () => {
     if (!reducedMotion.matches) return;
     document.getAnimations().forEach(animation => animation.cancel());
-    finishCounters();
   });
 })();
