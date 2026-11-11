@@ -200,66 +200,6 @@
   ).forEach(element => observer.observe(element));
 
 
-  const panel = document.querySelector(".learning");
-  const panelHome = document.querySelector(".status-home");
-  const landing = document.querySelector(".status-landing");
-  const dropButton = document.querySelector(".drop-panel");
-  const resetButton = document.querySelector(".reset-panel");
-  let falling;
-  dropButton.hidden = false;
-
-  dropButton.addEventListener("click", async () => {
-    if (dropButton.disabled || landing.contains(panel)) return;
-    observer.unobserve(panel);
-    panel.getAnimations().forEach(animation => animation.cancel());
-    const start = panel.getBoundingClientRect();
-    panelHome.style.minHeight = panelHome.offsetHeight + "px";
-    panelHome.classList.add("is-empty");
-    landing.hidden = false;
-    landing.append(panel);
-    dropButton.disabled = true;
-    resetButton.disabled = true;
-    const end = panel.getBoundingClientRect();
-    const distance = start.top - end.top;
-    panel.classList.add("is-falling");
-    const destination = window.scrollY + end.top - 140;
-    window.scrollTo({ top: destination, behavior: reducedMotion.matches ? "instant" : "smooth" });
-    try {
-      if (!reducedMotion.matches) {
-        falling = panel.animate([
-          { transform: "translateY(" + distance + "px)", offset: 0, easing: "cubic-bezier(.55, 0, 1, .45)" },
-          { transform: "translateY(0)", offset: .65, easing: "ease-out" },
-          { transform: "translateY(-45px)", offset: .79, easing: "ease-in" },
-          { transform: "translateY(0)", offset: .9, easing: "ease-out" },
-          { transform: "translateY(-10px)", offset: .95 },
-          { transform: "translateY(0)", offset: 1 }
-        ], { duration: 1400 });
-        await falling.finished;
-      }
-    } catch {
-      // Resizing or switching to reduced motion settles the panel immediately.
-    } finally {
-      falling = null;
-      panel.classList.remove("is-falling");
-      resetButton.disabled = false;
-      dropButton.textContent = "Panel landed ↓";
-      resetButton.focus({ preventScroll: true });
-    }
-  });
-
-  resetButton.addEventListener("click", () => {
-    if (resetButton.disabled) return;
-    panelHome.append(panel);
-    landing.hidden = true;
-    panelHome.style.minHeight = "";
-    panelHome.classList.remove("is-empty");
-    dropButton.disabled = false;
-    dropButton.textContent = "Drop this panel ↓";
-    dropButton.scrollIntoView({ block: "center", behavior: reducedMotion.matches ? "instant" : "smooth" });
-    dropButton.focus({ preventScroll: true });
-  });
-  window.addEventListener("resize", () => falling?.cancel());
-
   reducedMotion.addEventListener("change", () => {
     if (!reducedMotion.matches) return;
     document.getAnimations().forEach(animation => animation.cancel());

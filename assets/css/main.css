@@ -549,7 +549,7 @@ h2 {
 }
 .project:focus-within::before { opacity: 1; }
 .project:focus-within { background: #f8eee3; }
-.learning { position: relative; border-left: 8px solid var(--ink); }
+.learning { position: relative; border: var(--line); }
 .learning::after {
   content: "";
   position: absolute;
@@ -640,11 +640,9 @@ h2 {
 }
 .project:nth-child(3n + 1) .tools li:first-child { rotate: -2deg; }
 .project:nth-child(3n + 2) .tools li:last-child { rotate: 1.5deg; }
-.learning { border-radius: 1px 8px 2px 0; box-shadow: 8px 5px 0 var(--ink); }
 @media (max-width: 600px) {
   .portrait { rotate: .6deg; box-shadow: 4px 4px 0 var(--ink); }
   .stats { rotate: 0deg; }
-  .learning { box-shadow: 4px 4px 0 var(--ink); }
 }
 
 
@@ -784,19 +782,6 @@ h2 {
   .project-media { grid-column: 1 / -1; width: min(100%, 320px); }
 }
 
-
-.status-home { margin-block: clamp(3.75rem, 9vw, 7rem); }
-.status-home .learning { margin-block: 1.2rem 0; }
-.drop-panel, .reset-panel { cursor: pointer; margin-top: 0; }
-.drop-panel[hidden], .status-landing[hidden] { display: none; }
-.drop-panel:disabled, .reset-panel:disabled { cursor: wait; }
-.status-landing { margin-bottom: 3rem; padding-top: 1.5rem; border-top: 2px dashed var(--accent); }
-.status-landing .learning { margin: 1.2rem 0 1rem; }
-.learning.is-falling { position: relative; z-index: 3; pointer-events: none; }
-.status-home.is-empty {
-  background: repeating-linear-gradient(-45deg, transparent, transparent 14px, #79334d08 14px, #79334d08 15px);
-  border-bottom: 2px dashed #79334d55;
-}
 
 /* Text reacts like the printed pieces elsewhere on the page. */
 @media (hover: hover) and (pointer: fine) {
