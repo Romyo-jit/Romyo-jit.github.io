@@ -131,6 +131,96 @@ h1 span { color: var(--warm); margin-left: .03em; }
 .button:hover { background: var(--warm); }
 .button:focus-visible { outline-color: var(--white); }
 
+.music-player {
+  display: grid;
+  gap: .7rem;
+  width: min(100%, 28rem);
+  margin-top: 1.4rem;
+  padding: 1rem;
+  border: var(--line);
+  box-shadow: 5px 5px 0 var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+.music-player-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.music-player-title, .music-player-status {
+  font: 600 .7rem/1.5 var(--mono);
+}
+.music-player-title {
+  margin: 0;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.music-track-name {
+  color: var(--ink);
+  font: 700 1.25rem/1.1 "Instrument Sans", system-ui, sans-serif;
+}
+.music-player-signal {
+  display: flex;
+  align-items: end;
+  gap: 3px;
+  height: 1rem;
+}
+.music-player-signal i {
+  display: block;
+  width: 4px;
+  height: 40%;
+  background: var(--accent);
+}
+.music-player-signal i:nth-child(2) { height: 85%; }
+.music-player-signal i:nth-child(3) { height: 60%; }
+.music-player-signal i:nth-child(4) { height: 100%; }
+.music-progress {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .55rem;
+}
+.music-time {
+  font: 600 .65rem/1 var(--mono);
+}
+.music-progress input {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.music-player-controls {
+  display: flex;
+  justify-content: center;
+  gap: .65rem;
+}
+.music-player-controls button {
+  min-width: 2.4rem;
+  min-height: 2.2rem;
+  padding: .35rem .55rem;
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  background: var(--highlight);
+  color: var(--ink);
+  font: 600 .7rem/1.5 var(--mono);
+  cursor: pointer;
+}
+.music-player-controls button:hover { background: var(--warm); }
+.music-player-controls button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+.music-player-controls .music-play {
+  min-width: 3.2rem;
+  background: var(--accent);
+  color: var(--white);
+}
+.music-player-status {
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--accent);
+}
+
 .hero-image { position: absolute; inset: 0; z-index: -1; }
 .hero-image img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 

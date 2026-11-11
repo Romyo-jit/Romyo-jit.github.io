@@ -34,6 +34,28 @@
         <h1 id="hero-title">V4rk4<span>.</span></h1>
         <p class="hero-interests"><span class="sr-only">Curious about Programming, Photography, and Mathematics.</span><span aria-hidden="true">Curious about <strong class="typed-interest">Programming, Photography, and Mathematics.</strong></span></p>
         <a class="button" href="#resume">Explore my projects <span aria-hidden="true">↘</span></a>
+        <section class="music-player" aria-label="Music player">
+          <div class="music-player-heading">
+            <p class="music-player-title">Now playing</p>
+            <span class="music-player-signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <p class="music-track-name">20 Min</p>
+          <audio id="music-player" autoplay preload="metadata">
+            <source src="assets/songs/20%20min%20Lil%20uzi.mp3" type="audio/mpeg">
+            Your browser does not support the audio player.
+          </audio>
+          <div class="music-progress">
+            <span class="music-time" data-music-time="current">0:00</span>
+            <input type="range" min="0" max="100" value="0" aria-label="Music progress" data-music-progress>
+            <span class="music-time" data-music-time="duration">0:00</span>
+          </div>
+          <div class="music-player-controls">
+            <button type="button" data-music-action="previous" aria-label="Previous song">|◀</button>
+            <button class="music-play" type="button" data-music-action="play" aria-label="Play music">▶</button>
+            <button type="button" data-music-action="next" aria-label="Next song">▶|</button>
+          </div>
+          <p class="music-player-status" role="status" aria-live="polite"></p>
+        </section>
       </div>
       <div class="hero-orbit">
         <div class="atom" aria-hidden="true">

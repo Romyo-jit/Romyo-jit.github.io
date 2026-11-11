@@ -30,6 +30,73 @@
     atomToggle.textContent = paused ? "Play atom" : "Pause atom";
   });
 
+  const musicPlayer = document.querySelector("#music-player");
+  const musicStatus = document.querySelector(".music-player-status");
+  const musicProgress = document.querySelector("[data-music-progress]");
+  const musicPlay = document.querySelector('[data-music-action="play"]');
+  const currentTime = document.querySelector('[data-music-time="current"]');
+  const durationTime = document.querySelector('[data-music-time="duration"]');
+  const musicTracks = ["assets/songs/20%20min%20Lil%20uzi.mp3"];
+  let currentTrack = 0;
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return "0:00";
+    return Math.floor(seconds / 60) + ":" + String(Math.floor(seconds % 60)).padStart(2, "0");
+  }
+
+  function updateMusicControls() {
+    musicPlay.textContent = musicPlayer.paused ? "▶" : "Ⅱ";
+    musicPlay.setAttribute("aria-label", musicPlayer.paused ? "Play music" : "Pause music");
+  }
+
+  function loadTrack(index, shouldPlay) {
+    currentTrack = (index + musicTracks.length) % musicTracks.length;
+    musicPlayer.src = musicTracks[currentTrack];
+    musicPlayer.load();
+    musicProgress.value = 0;
+    currentTime.textContent = "0:00";
+    durationTime.textContent = "0:00";
+    if (!shouldPlay) return;
+    musicPlayer.play().catch(() => {
+      musicStatus.textContent = "Press play to start the music.";
+    });
+  }
+
+  musicPlayer.addEventListener("error", () => {
+    musicStatus.textContent = "The selected song could not be played.";
+  });
+  musicPlayer.addEventListener("loadedmetadata", () => {
+    durationTime.textContent = formatTime(musicPlayer.duration);
+  });
+  musicPlayer.addEventListener("timeupdate", () => {
+    currentTime.textContent = formatTime(musicPlayer.currentTime);
+    musicProgress.value = musicPlayer.duration ? (musicPlayer.currentTime / musicPlayer.duration) * 100 : 0;
+  });
+  musicPlayer.addEventListener("play", updateMusicControls);
+  musicPlayer.addEventListener("pause", updateMusicControls);
+  musicPlayer.addEventListener("ended", () => loadTrack(currentTrack + 1, true));
+  musicPlay.addEventListener("click", () => {
+    if (musicPlayer.paused) {
+      musicPlayer.play().catch(() => {
+        musicStatus.textContent = "Press play to start the music.";
+      });
+    } else {
+      musicPlayer.pause();
+    }
+  });
+  musicProgress.addEventListener("input", () => {
+    if (musicPlayer.duration) musicPlayer.currentTime = (Number(musicProgress.value) / 100) * musicPlayer.duration;
+  });
+  document.querySelector('[data-music-action="previous"]').addEventListener("click", () => {
+    loadTrack(currentTrack - 1, true);
+  });
+  document.querySelector('[data-music-action="next"]').addEventListener("click", () => {
+    loadTrack(currentTrack + 1, true);
+  });
+  musicPlayer.play().catch(() => {
+    musicStatus.textContent = "Press play to start the music.";
+  });
+
   const interest = document.querySelector(".typed-interest");
   let typing;
 
