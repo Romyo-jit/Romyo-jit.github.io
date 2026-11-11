@@ -494,6 +494,12 @@ h2 {
     width: clamp(130px, 34vw, 180px);
   }
 }
+@media (max-width: 600px) {
+  .hero-orbit {
+    right: 1rem;
+    left: auto;
+  }
+}
 
 
 /* Small, fixed irregularities keep the composition stable between visits. */
