@@ -14,6 +14,12 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <button class="site-easter-egg egg-spark" data-depth=".08" type="button" aria-label="Change the site colors">*</button>
+  <button class="site-easter-egg egg-ring" data-depth="-.05" type="button" aria-label="Change the site colors">o</button>
+  <button class="site-easter-egg egg-cross" data-depth=".12" type="button" aria-label="Change the site colors">+</button>
+  <button class="site-easter-egg web3-diamond" data-depth="-.09" type="button" aria-label="Change the site colors"></button>
+  <button class="site-easter-egg web3-cube" data-depth=".06" type="button" aria-label="Change the site colors"></button>
+  <button class="site-easter-egg web3-node" data-depth="-.07" type="button" aria-label="Change the site colors"></button>
   <header id="header" class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="#hero"><img src="assets/img/newpfp.jpeg" alt="Leon Kennedy" width="36" height="36">romy0x1337</a>
@@ -26,6 +32,15 @@
       <a class="header-github" href="https://github.com/Romyo-jit">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
+
+  <div class="hero-orbit">
+    <div class="atom" aria-hidden="true">
+      <div class="atom-orbit"><i></i></div>
+      <div class="atom-orbit"><i></i></div>
+      <div class="atom-orbit"><i></i></div>
+      <div class="atom-nucleus"><i></i><i></i><i></i></div>
+    </div>
+  </div>
 
   <main id="main" class="wrap">
     <section class="music-player" aria-label="Music player">
@@ -56,15 +71,6 @@
         <h1 id="hero-title"><span class="hero-name">romy0</span><small class="hero-handle">x1337</small></h1>
         <p class="hero-interests"><span class="sr-only">Curious about Programming, Photography, and Mathematics.</span><span aria-hidden="true">Curious about <strong class="typed-interest">Programming, Photography, and Mathematics.</strong></span></p>
         <a class="button" href="#resume">Explore my projects <span aria-hidden="true">↘</span></a>
-      </div>
-      <div class="hero-orbit">
-        <div class="atom" aria-hidden="true">
-          <div class="atom-orbit"><i></i></div>
-          <div class="atom-orbit"><i></i></div>
-          <div class="atom-orbit"><i></i></div>
-          <div class="atom-nucleus"><i></i><i></i><i></i></div>
-        </div>
-        <button class="atom-toggle" type="button" aria-pressed="false">Pause atom</button>
       </div>
       <div class="hero-image">
         <img src="assets/img/hero-bg.jpg" alt="">
@@ -192,7 +198,7 @@
     </section>
 
     <section id="testimonials" class="section learning frame">
-      <h2>Current status</h2>
+      <h2>Current status<svg class="status-scribble" viewBox="0 0 240 18" aria-hidden="true"><path d="M2 10C38 16 67 4 105 10S177 16 238 7"></path></svg></h2>
       <p>I am currently learning all the basics math and theory of Machine Learning from the free resources on the Internet, mainly from Stanford CS229-Autumn ML course of 2018. Then I'm planning to learn the necessary tools of python to implement or make some projects using Machine Learning ^_^</p>
     </section>
 

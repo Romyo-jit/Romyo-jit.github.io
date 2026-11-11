@@ -22,13 +22,124 @@
   document.addEventListener("pointerdown", () => cursor.classList.add("is-pressed"));
   document.addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
-  const atom = document.querySelector(".hero-orbit");
-  const atomToggle = document.querySelector(".atom-toggle");
-  atomToggle.addEventListener("click", () => {
-    const paused = atom.classList.toggle("is-paused");
-    atomToggle.setAttribute("aria-pressed", String(paused));
-    atomToggle.textContent = paused ? "Play atom" : "Pause atom";
+  const colorEggs = document.querySelectorAll(".site-easter-egg");
+  const reducedMotionQuery = reducedMotion;
+  const colorPalettes = [
+    { accent: "#79334d", highlight: "#f8c48c", warm: "#f3a294" },
+    { accent: "#315c68", highlight: "#f4d06f", warm: "#e89b7b" },
+    { accent: "#5b416b", highlight: "#f1c27d", warm: "#d99ac5" },
+    { accent: "#2f5d50", highlight: "#f2c879", warm: "#e49a7a" }
+  ];
+  colorEggs.forEach(egg => {
+    egg.addEventListener("click", () => {
+      const palette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+      const root = document.documentElement;
+      root.style.setProperty("--accent", palette.accent);
+      root.style.setProperty("--highlight", palette.highlight);
+      root.style.setProperty("--warm", palette.warm);
+      egg.classList.remove("is-popped");
+      void egg.offsetWidth;
+      egg.classList.add("is-popped");
+    });
   });
+  let backgroundScrollFrame = null;
+  function moveBackgroundArtifacts() {
+    backgroundScrollFrame = null;
+    if (reducedMotionQuery.matches) return;
+    document.querySelectorAll(".site-easter-egg[data-depth]").forEach(egg => {
+      const depth = Number(egg.dataset.depth);
+      egg.style.setProperty("--scroll-shift", window.scrollY * depth + "px");
+    });
+  }
+  window.addEventListener("scroll", () => {
+    if (backgroundScrollFrame !== null) return;
+    backgroundScrollFrame = requestAnimationFrame(moveBackgroundArtifacts);
+  }, { passive: true });
+  moveBackgroundArtifacts();
+
+  const atom = document.querySelector(".hero-orbit");
+  let atomDragging = false;
+  let atomOffsetX = 0;
+  let atomOffsetY = 0;
+  const atomBounds = atom.getBoundingClientRect();
+  let atomX = atomBounds.left;
+  let atomY = atomBounds.top;
+  let atomVelocityX = (Math.random() - .5) * .7;
+  let atomVelocityY = (Math.random() - .5) * .7;
+  let gravityAngle = Math.random() * Math.PI * 2;
+  let gravityTimer = 0;
+  let pointerX = window.innerWidth / 2;
+  let pointerY = window.innerHeight / 2;
+
+  atom.addEventListener("pointerdown", event => {
+    const bounds = atom.getBoundingClientRect();
+    atomDragging = true;
+    atomX = bounds.left;
+    atomY = bounds.top;
+    atomOffsetX = event.clientX - bounds.left;
+    atomOffsetY = event.clientY - bounds.top;
+    atom.setPointerCapture(event.pointerId);
+    atom.classList.add("is-dragging");
+  });
+  atom.addEventListener("pointermove", event => {
+    if (!atomDragging) return;
+    atomX = Math.max(0, Math.min(window.innerWidth - atom.offsetWidth, event.clientX - atomOffsetX));
+    atomY = Math.max(0, Math.min(window.innerHeight - atom.offsetHeight, event.clientY - atomOffsetY));
+    atom.style.left = atomX + "px";
+    atom.style.top = atomY + "px";
+    atom.style.right = "auto";
+  });
+  function stopAtomDragging(event) {
+    if (!atomDragging) return;
+    atomDragging = false;
+    atomVelocityX = (Math.random() - .5) * 1.4;
+    atomVelocityY = (Math.random() - .5) * 1.4;
+    atom.releasePointerCapture?.(event.pointerId);
+    atom.classList.remove("is-dragging");
+  }
+  atom.addEventListener("pointerup", stopAtomDragging);
+  atom.addEventListener("pointercancel", stopAtomDragging);
+  window.addEventListener("pointermove", event => {
+    if (event.pointerType === "touch") return;
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+  });
+  let atomFrame;
+  let previousAtomTime = performance.now();
+  function animateAtom(time) {
+    const delta = Math.min((time - previousAtomTime) / 16.67, 2);
+    previousAtomTime = time;
+    if (!reducedMotion.matches && !atomDragging) {
+      gravityTimer -= delta;
+      if (gravityTimer <= 0) {
+        gravityAngle = Math.random() * Math.PI * 2;
+        gravityTimer = 90 + Math.random() * 180;
+      }
+      atomVelocityX += Math.cos(gravityAngle) * .012 * delta;
+      atomVelocityY += Math.sin(gravityAngle) * .012 * delta;
+      const atomCenterX = atomX + atom.offsetWidth / 2;
+      const atomCenterY = atomY + atom.offsetHeight / 2;
+      atomVelocityX += (pointerX - atomCenterX) * .00012 * delta;
+      atomVelocityY += (pointerY - atomCenterY) * .00012 * delta;
+      atomVelocityX *= .995;
+      atomVelocityY *= .995;
+      atomX += atomVelocityX * delta;
+      atomY += atomVelocityY * delta;
+      if (atomX <= 0 || atomX >= window.innerWidth - atom.offsetWidth) {
+        atomX = Math.max(0, Math.min(window.innerWidth - atom.offsetWidth, atomX));
+        atomVelocityX *= -.82;
+      }
+      if (atomY <= 0 || atomY >= window.innerHeight - atom.offsetHeight) {
+        atomY = Math.max(0, Math.min(window.innerHeight - atom.offsetHeight, atomY));
+        atomVelocityY *= -.82;
+      }
+      atom.style.left = atomX + "px";
+      atom.style.top = atomY + "px";
+      atom.style.right = "auto";
+    }
+    atomFrame = requestAnimationFrame(animateAtom);
+  }
+  atomFrame = requestAnimationFrame(animateAtom);
 
   const musicPlayer = document.querySelector("#music-player");
   const musicStatus = document.querySelector(".music-player-status");
