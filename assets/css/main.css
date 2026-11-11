@@ -1042,3 +1042,101 @@ h2 {
 @media (hover: hover) and (pointer: fine) {
   .about h2:hover, #contact > h2:hover, .learning h2:hover { text-shadow: none; }
 }
+
+/* Give each part of the page its own visual rhythm. */
+#about { margin-top: clamp(4rem, 11vw, 9rem); }
+#about .about-copy { max-width: 38rem; }
+#about .portrait { margin-top: 2rem; }
+
+#skills { margin-top: clamp(5rem, 10vw, 8rem); }
+.skills.frame {
+  border: 0;
+  box-shadow: none;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  background: transparent;
+}
+.skill-groups {
+  align-self: start;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  border-left: 5px solid var(--accent);
+}
+.skill-group li {
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  background: transparent;
+  padding-inline: .15rem;
+  margin-right: .6rem;
+}
+.skills-activity {
+  border: 0;
+  background: var(--white);
+  box-shadow: 0 1px 0 #321e2940;
+}
+.skills-activity figcaption { border-bottom: 1px solid #321e2930; padding-bottom: .9rem; }
+
+#resume { margin-top: clamp(6rem, 12vw, 10rem); }
+#resume .section-heading { align-items: start; margin-bottom: 2.5rem; }
+.projects.frame {
+  border: 0;
+  border-top: 2px solid var(--ink);
+  box-shadow: none;
+  background: transparent;
+}
+.projects::after { display: none; }
+.project {
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  gap: 1rem clamp(1rem, 3vw, 2.5rem);
+}
+.project + .project { border-top: 1px solid #321e2960; }
+.project:first-child {
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  background: var(--cool);
+}
+.project:first-child h3 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -.02em;
+}
+.project::before { width: 3px; }
+.project:focus-within { background: #f8eee3; }
+.project:first-child:focus-within { background: var(--cool); }
+@media (hover: hover) {
+  .project:first-child:hover { background: var(--cool); }
+}
+
+.learning.frame {
+  margin-left: clamp(0px, 6vw, 5rem);
+  border: 0;
+  border-radius: 0 2.5rem 0 0;
+  box-shadow: none;
+  padding: clamp(2rem, 5vw, 4rem);
+}
+.learning::after { right: 1.5rem; }
+
+#contact { margin-top: clamp(5rem, 12vw, 9rem); }
+.contact.frame {
+  border: 0;
+  border-top: 2px solid var(--ink);
+  box-shadow: none;
+  background: transparent;
+}
+.contact::before { display: none; }
+.contact li:nth-child(even) { border-left: 0; }
+.contact li:nth-child(n + 3) { border-top: 0; }
+.contact li { border-bottom: 1px solid #321e2955; }
+.contact li:nth-child(odd) { padding-right: clamp(.5rem, 3vw, 2rem); }
+.contact li:nth-child(even) { padding-left: clamp(.5rem, 3vw, 2rem); }
+.contact a { padding: 1.2rem .25rem; }
+
+@media (max-width: 880px) {
+  .skills.frame { gap: 1.2rem; }
+  .skills-activity { border-top: 0; }
+}
+@media (max-width: 600px) {
+  #about .portrait { margin-top: .5rem; }
+  .learning.frame { margin-left: .5rem; }
+  .contact { grid-template-columns: 1fr; }
+  .contact li:last-child { grid-column: auto; }
+  .contact li:nth-child(n) { padding-inline: 0; }
+}
