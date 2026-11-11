@@ -105,8 +105,16 @@
     loadTrack(currentTrack + 1, true);
   });
   musicTrackName.textContent = getTrackTitle(musicTracks[currentTrack]);
+  function startMusicAfterInteraction() {
+    musicPlayer.play().then(() => {
+      musicStatus.textContent = "";
+    }).catch(() => {
+      musicStatus.textContent = "Press play to start the music.";
+    });
+  }
   musicPlayer.play().catch(() => {
-    musicStatus.textContent = "Press play to start the music.";
+    musicStatus.textContent = "Tap anywhere to start the music.";
+    document.addEventListener("pointerdown", startMusicAfterInteraction, { once: true });
   });
 
   const interest = document.querySelector(".typed-interest");
