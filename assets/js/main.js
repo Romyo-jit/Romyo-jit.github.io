@@ -104,11 +104,13 @@
   document.querySelector('[data-music-action="next"]').addEventListener("click", () => {
     loadTrack(currentTrack + 1, true);
   });
-  musicTrackName.textContent = getTrackTitle(musicTracks[currentTrack]);
+  currentTrack = Math.floor(Math.random() * musicTracks.length);
+  loadTrack(currentTrack, false);
   function startMusicAfterInteraction() {
     musicPlayer.play().then(() => {
       musicStatus.textContent = "";
       document.removeEventListener("click", startMusicAfterInteraction);
+      document.removeEventListener("touchstart", startMusicAfterInteraction);
       document.removeEventListener("touchend", startMusicAfterInteraction);
     }).catch(() => {
       musicStatus.textContent = "Press play to start the music.";
@@ -117,6 +119,7 @@
   musicPlayer.play().catch(() => {
     musicStatus.textContent = "Tap the page or press play to start the music.";
     document.addEventListener("click", startMusicAfterInteraction);
+    document.addEventListener("touchstart", startMusicAfterInteraction, { passive: true });
     document.addEventListener("touchend", startMusicAfterInteraction, { passive: true });
   });
 
