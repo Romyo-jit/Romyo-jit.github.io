@@ -69,7 +69,7 @@
     durationTime.textContent = "0:00";
     if (!shouldPlay) return;
     musicPlayer.play().catch(() => {
-      musicStatus.textContent = "Press play to start the music.";
+      musicStatus.textContent = "";
     });
   }
 
@@ -89,7 +89,7 @@
   musicPlay.addEventListener("click", () => {
     if (musicPlayer.paused) {
       musicPlayer.play().catch(() => {
-        musicStatus.textContent = "Press play to start the music.";
+        musicStatus.textContent = "";
       });
     } else {
       musicPlayer.pause();
@@ -113,11 +113,11 @@
       document.removeEventListener("touchstart", startMusicAfterInteraction);
       document.removeEventListener("touchend", startMusicAfterInteraction);
     }).catch(() => {
-      musicStatus.textContent = "Press play to start the music.";
+      musicStatus.textContent = "";
     });
   }
   musicPlayer.play().catch(() => {
-    musicStatus.textContent = "Tap the page or press play to start the music.";
+    musicStatus.textContent = "";
     document.addEventListener("click", startMusicAfterInteraction);
     document.addEventListener("touchstart", startMusicAfterInteraction, { passive: true });
     document.addEventListener("touchend", startMusicAfterInteraction, { passive: true });
