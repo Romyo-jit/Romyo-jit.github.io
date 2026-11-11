@@ -32,11 +32,16 @@
 
   const musicPlayer = document.querySelector("#music-player");
   const musicStatus = document.querySelector(".music-player-status");
+  const musicTrackName = document.querySelector(".music-track-name");
   const musicProgress = document.querySelector("[data-music-progress]");
   const musicPlay = document.querySelector('[data-music-action="play"]');
   const currentTime = document.querySelector('[data-music-time="current"]');
   const durationTime = document.querySelector('[data-music-time="duration"]');
-  const musicTracks = ["assets/songs/20%20min%20Lil%20uzi.mp3"];
+  const musicTracks = [
+    "assets/songs/20%20min%20Lil%20uzi.mp3",
+    "assets/songs/Money%20Longer.mp3",
+    "assets/songs/XO%20Tour%20Llif3.mp3"
+  ];
   let currentTrack = 0;
 
   function formatTime(seconds) {
@@ -49,8 +54,14 @@
     musicPlay.setAttribute("aria-label", musicPlayer.paused ? "Play music" : "Pause music");
   }
 
+  function getTrackTitle(source) {
+    const filename = decodeURIComponent(source.split("/").pop() || source);
+    return filename.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+
   function loadTrack(index, shouldPlay) {
     currentTrack = (index + musicTracks.length) % musicTracks.length;
+    musicTrackName.textContent = getTrackTitle(musicTracks[currentTrack]);
     musicPlayer.src = musicTracks[currentTrack];
     musicPlayer.load();
     musicProgress.value = 0;
@@ -93,6 +104,7 @@
   document.querySelector('[data-music-action="next"]').addEventListener("click", () => {
     loadTrack(currentTrack + 1, true);
   });
+  musicTrackName.textContent = getTrackTitle(musicTracks[currentTrack]);
   musicPlayer.play().catch(() => {
     musicStatus.textContent = "Press play to start the music.";
   });
