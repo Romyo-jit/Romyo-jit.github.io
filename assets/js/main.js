@@ -320,7 +320,6 @@
         duration: 650,
         easing: "cubic-bezier(0.22, 1, 0.36, 1)"
       });
-      if (target.classList.contains("skills")) target.classList.add("skills-revealed");
     });
   }, { threshold: 0.08 });
 
