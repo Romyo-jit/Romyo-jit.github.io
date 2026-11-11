@@ -79,6 +79,13 @@
     backgroundScrollFrame = requestAnimationFrame(moveBackgroundArtifacts);
   }, { passive: true });
   moveBackgroundArtifacts();
+  document.querySelector("#scroll-top").addEventListener("click", event => {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: reducedMotion.matches ? "auto" : "smooth"
+    });
+  });
 
   const atom = document.querySelector(".hero-orbit");
   let pointerX = window.innerWidth / 2;
