@@ -7,23 +7,46 @@
   cursor.className = "cursor-halo";
   cursor.setAttribute("aria-hidden", "true");
   document.body.append(cursor);
+  let cursorTargetX = window.innerWidth / 2;
+  let cursorTargetY = window.innerHeight / 2;
+  let cursorX = cursorTargetX;
+  let cursorY = cursorTargetY;
+  let cursorFrame = null;
+  function animateCursor() {
+    if (!cursorMotion.matches) {
+      cursorFrame = null;
+      return;
+    }
+    cursorX += (cursorTargetX - cursorX) * .18;
+    cursorY += (cursorTargetY - cursorY) * .18;
+    cursor.style.left = cursorX + "px";
+    cursor.style.top = cursorY + "px";
+    cursorFrame = requestAnimationFrame(animateCursor);
+  }
+  function startCursorAnimation() {
+    if (cursorFrame === null && cursorMotion.matches) cursorFrame = requestAnimationFrame(animateCursor);
+  }
+  startCursorAnimation();
 
   document.addEventListener("pointermove", event => {
     if (!cursorMotion.matches || event.pointerType === "touch") return;
-    cursor.style.left = event.clientX + "px";
-    cursor.style.top = event.clientY + "px";
+    cursorTargetX = event.clientX;
+    cursorTargetY = event.clientY;
     cursor.classList.add("is-visible");
-    cursor.classList.toggle("is-interactive", Boolean(event.target.closest("a, button, input, select, textarea, summary")));
+    const target = event.target instanceof Element ? event.target : null;
+    cursor.classList.toggle("is-interactive", Boolean(target?.closest("a, button, input, select, textarea, summary")));
   }, { passive: true });
   function hideCursor() { cursor.classList.remove("is-visible"); }
   document.documentElement.addEventListener("pointerleave", hideCursor);
   window.addEventListener("blur", hideCursor);
-  cursorMotion.addEventListener("change", hideCursor);
+  cursorMotion.addEventListener("change", () => {
+    hideCursor();
+    startCursorAnimation();
+  });
   document.addEventListener("pointerdown", () => cursor.classList.add("is-pressed"));
   document.addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
   const colorEggs = document.querySelectorAll(".site-easter-egg");
-  const reducedMotionQuery = reducedMotion;
   const colorPalettes = [
     { accent: "#79334d", highlight: "#f8c48c", warm: "#f3a294" },
     { accent: "#315c68", highlight: "#f4d06f", warm: "#e89b7b" },
@@ -45,8 +68,8 @@
   let backgroundScrollFrame = null;
   function moveBackgroundArtifacts() {
     backgroundScrollFrame = null;
-    if (reducedMotionQuery.matches) return;
-    document.querySelectorAll(".site-easter-egg[data-depth]").forEach(egg => {
+    if (reducedMotion.matches) return;
+    document.querySelectorAll("[data-depth]").forEach(egg => {
       const depth = Number(egg.dataset.depth);
       egg.style.setProperty("--scroll-shift", window.scrollY * depth + "px");
     });
@@ -58,88 +81,107 @@
   moveBackgroundArtifacts();
 
   const atom = document.querySelector(".hero-orbit");
-  let atomDragging = false;
-  let atomOffsetX = 0;
-  let atomOffsetY = 0;
-  const atomBounds = atom.getBoundingClientRect();
-  let atomX = atomBounds.left;
-  let atomY = atomBounds.top;
-  let atomVelocityX = (Math.random() - .5) * .7;
-  let atomVelocityY = (Math.random() - .5) * .7;
-  let gravityAngle = Math.random() * Math.PI * 2;
-  let gravityTimer = 0;
   let pointerX = window.innerWidth / 2;
   let pointerY = window.innerHeight / 2;
-
-  atom.addEventListener("pointerdown", event => {
-    const bounds = atom.getBoundingClientRect();
-    atomDragging = true;
-    atomX = bounds.left;
-    atomY = bounds.top;
-    atomOffsetX = event.clientX - bounds.left;
-    atomOffsetY = event.clientY - bounds.top;
-    atom.setPointerCapture(event.pointerId);
-    atom.classList.add("is-dragging");
-  });
-  atom.addEventListener("pointermove", event => {
-    if (!atomDragging) return;
-    atomX = Math.max(0, Math.min(window.innerWidth - atom.offsetWidth, event.clientX - atomOffsetX));
-    atomY = Math.max(0, Math.min(window.innerHeight - atom.offsetHeight, event.clientY - atomOffsetY));
-    atom.style.left = atomX + "px";
-    atom.style.top = atomY + "px";
-    atom.style.right = "auto";
-  });
-  function stopAtomDragging(event) {
-    if (!atomDragging) return;
-    atomDragging = false;
-    atomVelocityX = (Math.random() - .5) * 1.4;
-    atomVelocityY = (Math.random() - .5) * 1.4;
-    atom.releasePointerCapture?.(event.pointerId);
-    atom.classList.remove("is-dragging");
+  const atomControllers = [];
+  function createAtomController(element, velocityScale) {
+    const bounds = element.getBoundingClientRect();
+    const controller = {
+      element,
+      x: bounds.left,
+      y: bounds.top,
+      velocityX: (Math.random() - .5) * velocityScale,
+      velocityY: (Math.random() - .5) * velocityScale,
+      gravityAngle: Math.random() * Math.PI * 2,
+      gravityTimer: 0
+    };
+    atomControllers.push(controller);
   }
-  atom.addEventListener("pointerup", stopAtomDragging);
-  atom.addEventListener("pointercancel", stopAtomDragging);
+  createAtomController(atom, .7);
+  const summonedAtoms = [];
+  document.querySelector('[data-action="summon-atom"]').addEventListener("click", () => {
+    const summoned = atom.cloneNode(true);
+    summoned.classList.add("summoned-atom");
+    summoned.style.left = 8 + Math.random() * 76 + "vw";
+    summoned.style.top = 10 + Math.random() * 72 + "vh";
+    summoned.style.right = "auto";
+    document.body.append(summoned);
+    summonedAtoms.push(summoned);
+    createAtomController(summoned, .55);
+    if (summonedAtoms.length > 3) {
+      const removedAtom = summonedAtoms.shift();
+      removedAtom.remove();
+      const removedControllerIndex = atomControllers.findIndex(controller => controller.element === removedAtom);
+      if (removedControllerIndex !== -1) atomControllers.splice(removedControllerIndex, 1);
+    }
+  });
   window.addEventListener("pointermove", event => {
     if (event.pointerType === "touch") return;
     pointerX = event.clientX;
     pointerY = event.clientY;
   });
-  let atomFrame;
   let previousAtomTime = performance.now();
   function animateAtom(time) {
     const delta = Math.min((time - previousAtomTime) / 16.67, 2);
     previousAtomTime = time;
-    if (!reducedMotion.matches && !atomDragging) {
-      gravityTimer -= delta;
-      if (gravityTimer <= 0) {
-        gravityAngle = Math.random() * Math.PI * 2;
-        gravityTimer = 90 + Math.random() * 180;
+    if (!reducedMotion.matches) {
+      for (let firstIndex = 0; firstIndex < atomControllers.length; firstIndex++) {
+        for (let secondIndex = firstIndex + 1; secondIndex < atomControllers.length; secondIndex++) {
+          const first = atomControllers[firstIndex];
+          const second = atomControllers[secondIndex];
+          const firstElement = first.element;
+          const secondElement = second.element;
+          const firstCenterX = first.x + firstElement.offsetWidth / 2;
+          const firstCenterY = first.y + firstElement.offsetHeight / 2;
+          const secondCenterX = second.x + secondElement.offsetWidth / 2;
+          const secondCenterY = second.y + secondElement.offsetHeight / 2;
+          const distanceX = secondCenterX - firstCenterX;
+          const distanceY = secondCenterY - firstCenterY;
+          const distance = Math.max(Math.hypot(distanceX, distanceY), 1);
+          const repulsionRadius = 300;
+          if (distance >= repulsionRadius) continue;
+          const repulsion = (1 - distance / repulsionRadius) * .05 * delta;
+          const forceX = distanceX / distance * repulsion;
+          const forceY = distanceY / distance * repulsion;
+          first.velocityX -= forceX;
+          first.velocityY -= forceY;
+          second.velocityX += forceX;
+          second.velocityY += forceY;
+        }
       }
-      atomVelocityX += Math.cos(gravityAngle) * .012 * delta;
-      atomVelocityY += Math.sin(gravityAngle) * .012 * delta;
-      const atomCenterX = atomX + atom.offsetWidth / 2;
-      const atomCenterY = atomY + atom.offsetHeight / 2;
-      atomVelocityX += (pointerX - atomCenterX) * .00012 * delta;
-      atomVelocityY += (pointerY - atomCenterY) * .00012 * delta;
-      atomVelocityX *= .995;
-      atomVelocityY *= .995;
-      atomX += atomVelocityX * delta;
-      atomY += atomVelocityY * delta;
-      if (atomX <= 0 || atomX >= window.innerWidth - atom.offsetWidth) {
-        atomX = Math.max(0, Math.min(window.innerWidth - atom.offsetWidth, atomX));
-        atomVelocityX *= -.82;
-      }
-      if (atomY <= 0 || atomY >= window.innerHeight - atom.offsetHeight) {
-        atomY = Math.max(0, Math.min(window.innerHeight - atom.offsetHeight, atomY));
-        atomVelocityY *= -.82;
-      }
-      atom.style.left = atomX + "px";
-      atom.style.top = atomY + "px";
-      atom.style.right = "auto";
+      atomControllers.forEach(controller => {
+        const element = controller.element;
+        controller.gravityTimer -= delta;
+        if (controller.gravityTimer <= 0) {
+          controller.gravityAngle = Math.random() * Math.PI * 2;
+          controller.gravityTimer = 90 + Math.random() * 180;
+        }
+        controller.velocityX += Math.cos(controller.gravityAngle) * .012 * delta;
+        controller.velocityY += Math.sin(controller.gravityAngle) * .012 * delta;
+        const atomCenterX = controller.x + element.offsetWidth / 2;
+        const atomCenterY = controller.y + element.offsetHeight / 2;
+        controller.velocityX += (pointerX - atomCenterX) * .00012 * delta;
+        controller.velocityY += (pointerY - atomCenterY) * .00012 * delta;
+        controller.velocityX *= .995;
+        controller.velocityY *= .995;
+        controller.x += controller.velocityX * delta;
+        controller.y += controller.velocityY * delta;
+        if (controller.x <= 0 || controller.x >= window.innerWidth - element.offsetWidth) {
+          controller.x = Math.max(0, Math.min(window.innerWidth - element.offsetWidth, controller.x));
+          controller.velocityX *= -.82;
+        }
+        if (controller.y <= 0 || controller.y >= window.innerHeight - element.offsetHeight) {
+          controller.y = Math.max(0, Math.min(window.innerHeight - element.offsetHeight, controller.y));
+          controller.velocityY *= -.82;
+        }
+        element.style.left = controller.x + "px";
+        element.style.top = controller.y + "px";
+        element.style.right = "auto";
+      });
     }
-    atomFrame = requestAnimationFrame(animateAtom);
+    requestAnimationFrame(animateAtom);
   }
-  atomFrame = requestAnimationFrame(animateAtom);
+  requestAnimationFrame(animateAtom);
 
   const musicPlayer = document.querySelector("#music-player");
   const musicStatus = document.querySelector(".music-player-status");

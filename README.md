@@ -39,13 +39,7 @@ The project has also served as an evolving record of my development as I learn n
 
 ### Libraries and Frameworks
 
-The website also uses several front-end libraries to provide reusable UI components and effects:
-
-* **Bootstrap** — responsive layout and UI utilities
-* **Bootstrap Icons** — interface icons
-* **AOS (Animate On Scroll)** — scroll-based animations
-* **GLightbox** — interactive image/lightbox functionality
-* **Swiper** — interactive sliders and related UI components
+The page uses **Typed.js** for the rotating hero interests text. The main layout, animations, music player, cursor, and atom effects are implemented in the site's own CSS and JavaScript.
 
 The project loads typography from Google Fonts and keeps the main site styling in `assets/css/main.css`.
 
@@ -67,11 +61,7 @@ Romyo-jit.github.io/
 │   │   └── ...
 │   │
 │   └── vendor/
-│       ├── bootstrap/
-│       ├── bootstrap-icons/
-│       ├── aos/
-│       ├── glightbox/
-│       └── swiper/
+│       └── typed.js/
 │
 └── README.md
 ```
@@ -87,7 +77,7 @@ The main navigation provides access to:
 * **Resume** — skills and projects
 * **Contact** — ways to reach me and links to my profiles
 
-I chose a dark-background visual style and combined it with animations and responsive components to make the site feel interactive while keeping the information easy to navigate.
+I chose a paper-toned visual style with dark panels and bold accent colors, then combined it with animations and responsive components to make the site feel interactive while keeping the information easy to navigate.
 
 The portfolio also includes project descriptions and links to the corresponding source repositories. This allows the website to function not only as a personal profile but also as an index of my programming work.
 

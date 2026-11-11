@@ -75,6 +75,20 @@ main, footer { position: relative; z-index: 1; }
 .egg-spark { top: 38vh; left: 2vw; }
 .egg-ring { right: 2vw; bottom: 24vh; border: 2px solid currentColor; border-radius: 50%; font-size: 0; }
 .egg-cross { right: 7vw; top: 18vh; }
+.egg-cross-label {
+  position: fixed;
+  z-index: 3;
+  top: calc(18vh + 29px);
+  right: calc(7vw - 8px);
+  width: 56px;
+  color: var(--accent);
+  font: 700 .86rem/1 "Caveat", cursive;
+  text-align: center;
+  opacity: .7;
+  pointer-events: none;
+  rotate: -5deg;
+  translate: 0 var(--scroll-shift, 0px);
+}
 .web3-diamond {
   z-index: 0;
   pointer-events: none;
@@ -105,6 +119,9 @@ main, footer { position: relative; z-index: 1; }
   border: 2px solid currentColor;
   border-radius: 50%;
   box-shadow: 12px -8px 0 -6px var(--paper), 12px -8px 0 -4px currentColor;
+}
+.summoned-atom {
+  pointer-events: none;
 }
 .site-easter-egg.is-popped { color: var(--highlight); }
 
@@ -543,11 +560,11 @@ h2 {
 .atom-orbit {
   position: absolute;
   inset: 0;
-  color: #238f78;
+  color: #00c49a;
   transform: rotate(-30deg);
 }
-.atom-orbit:nth-child(2) { transform: rotate(30deg); color: #c87932; }
-.atom-orbit:nth-child(3) { transform: rotate(90deg); color: #7661b5; }
+.atom-orbit:nth-child(2) { transform: rotate(30deg); color: #ff9f1c; }
+.atom-orbit:nth-child(3) { transform: rotate(90deg); color: #8f6bff; }
 .atom-orbit::before {
   content: "";
   position: absolute;
@@ -572,20 +589,20 @@ h2 {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   transform: translate(-50%, -50%);
 }
 .atom-nucleus i {
   position: absolute;
-  width: 23px;
-  height: 23px;
+  width: 18px;
+  height: 18px;
   border: 2px solid var(--ink);
   border-radius: 50%;
   background: var(--warm);
 }
 .atom-nucleus i:nth-child(2) { right: 0; background: var(--highlight); }
-.atom-nucleus i:nth-child(3) { bottom: 0; left: 6px; }
+.atom-nucleus i:nth-child(3) { bottom: 0; left: 5px; }
 .section-heading h2, .about h2, #contact > h2 {
   width: fit-content;
   position: relative;
@@ -672,7 +689,8 @@ h2 {
   .project:hover { background: #f8eee3; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  h1 .hero-handle {
+  h1 .hero-handle,
+  .egg-cross-label {
     animation: handle-sway 2.8s ease-in-out infinite;
     transform-origin: left bottom;
   }
@@ -746,22 +764,6 @@ h2 {
 
 
 /* Scientific sketch details, kept clear of the atom's controls. */
-.atom::before {
-  content: "";
-  position: absolute;
-  inset: 5%;
-  border: 1px dashed #cddfd465;
-  border-radius: 50%;
-  pointer-events: none;
-}
-.atom::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(#cddfd450, #cddfd450) center / 1px 100% no-repeat,
-              linear-gradient(90deg, #cddfd450, #cddfd450) center / 100% 1px no-repeat;
-  pointer-events: none;
-}
 .atom-nucleus { z-index: 1; }
 .atom-nucleus::before, .atom-nucleus::after {
   content: "";
@@ -781,14 +783,14 @@ h2 {
   top: 18vh;
   right: 6vw;
   transform: none;
+  scale: .72;
+  opacity: .72;
   perspective: 900px;
-  cursor: grab;
-  touch-action: none;
+  pointer-events: none;
 }
-.hero-orbit.is-dragging { cursor: grabbing; }
 .atom {
   transform-style: preserve-3d;
-  filter: drop-shadow(0 0 12px #238f7855);
+  filter: drop-shadow(0 0 12px #00c49a66);
 }
 .atom-orbit {
   transform-style: preserve-3d;
@@ -844,6 +846,13 @@ h2 {
 
 .cursor-halo { display: none; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body,
+  body * {
+    cursor: none !important;
+  }
+  body :is(input:not([type="range"]), textarea, select, [contenteditable="true"]) {
+    cursor: auto !important;
+  }
   .cursor-halo {
     display: block;
     position: fixed;
@@ -857,16 +866,45 @@ h2 {
     transform: translate(-50%, -50%) rotate(-12deg);
     pointer-events: none;
     opacity: 0;
+    will-change: left, top, width, height, transform;
     transition: width 160ms ease, height 160ms ease, border-radius 160ms ease, opacity 160ms ease, background-color 160ms ease;
+  }
+  .cursor-halo::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border-radius: 50%;
+    background: var(--warm);
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--accent);
+    animation: cursor-pulse 1.8s ease-in-out infinite;
+  }
+  .cursor-halo::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 1px solid var(--highlight);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    opacity: .8;
+    animation: cursor-orbit 2.4s linear infinite;
   }
   .cursor-halo.is-visible { opacity: 1; }
   .cursor-halo.is-interactive {
     width: 42px;
     height: 42px;
-    border-radius: 5px 10px 4px 8px;
+    border-radius: 50%;
     background: #f8c48c45;
   }
   .cursor-halo.is-pressed { width: 20px; height: 20px; background: #f3a29465; }
+  .cursor-halo.is-interactive::after { animation-duration: 1.2s; }
+  @keyframes cursor-pulse {
+    0%, 100% { scale: .75; opacity: .7; }
+    50% { scale: 1; opacity: 1; }
+  }
+  @keyframes cursor-orbit {
+    to { rotate: 360deg; }
+  }
 }
 .about { position: relative; }
 .about::before {
@@ -907,11 +945,15 @@ h2 {
     50% { scale: 1.35; }
   }
   .atom { animation: atom-float 5s ease-in-out infinite; }
+  .atom-nucleus { animation: nucleus-spin 7s linear infinite; }
   .atom-orbit:nth-child(1) { animation: atom-plane-one 9s linear infinite; }
   .atom-orbit:nth-child(2) { animation: atom-plane-two 11s linear infinite; }
   .atom-orbit:nth-child(3) { animation: atom-plane-three 13s linear infinite; }
   @keyframes atom-float {
     50% { translate: 0 -12px; rotate: 2deg; }
+  }
+  @keyframes nucleus-spin {
+    to { rotate: 360deg; }
   }
   @keyframes atom-plane-one {
     to { rotate: 330deg; }
