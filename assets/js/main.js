@@ -108,13 +108,16 @@
   function startMusicAfterInteraction() {
     musicPlayer.play().then(() => {
       musicStatus.textContent = "";
+      document.removeEventListener("click", startMusicAfterInteraction);
+      document.removeEventListener("touchend", startMusicAfterInteraction);
     }).catch(() => {
       musicStatus.textContent = "Press play to start the music.";
     });
   }
   musicPlayer.play().catch(() => {
-    musicStatus.textContent = "Tap anywhere to start the music.";
-    document.addEventListener("pointerdown", startMusicAfterInteraction, { once: true });
+    musicStatus.textContent = "Tap the page or press play to start the music.";
+    document.addEventListener("click", startMusicAfterInteraction);
+    document.addEventListener("touchend", startMusicAfterInteraction, { passive: true });
   });
 
   const interest = document.querySelector(".typed-interest");
