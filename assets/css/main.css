@@ -203,7 +203,7 @@ h2 {
   padding: clamp(1rem, 3vw, 2rem);
   background: var(--cool);
 }
-.skill label { display: flex; justify-content: space-between; gap: .5rem; font: 600 .84rem/1.5 var(--mono); }
+.skill label { display: flex; justify-content: space-between; gap: .5rem; font: 700 .84rem/1.5 "Instrument Sans", system-ui, sans-serif; }
 .skill meter { display: block; width: 100%; height: 1rem; margin-top: .45rem; appearance: none; }
 .skill meter::-webkit-meter-bar { background: var(--white); border: var(--line); border-radius: 0; }
 .skill meter::-webkit-meter-optimum-value { background: var(--accent); }
@@ -734,11 +734,7 @@ h2 {
   line-height: .95;
   letter-spacing: -.03em;
 }
-#skills h2 {
-  font-family: "Instrument Sans", system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -.06em;
-}
+
 .project h3 { letter-spacing: -.025em; }
 @media (hover: hover) and (pointer: fine) {
   .about h2:hover, #contact > h2:hover, .learning h2:hover { text-shadow: none; }
