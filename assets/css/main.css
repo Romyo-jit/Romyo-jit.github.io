@@ -1117,6 +1117,10 @@ h2 {
   padding: clamp(1.4rem, 3vw, 2.5rem);
   background: var(--cool);
 }
+.project-graphics {
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  background: #f3d3c2;
+}
 .project:first-child h3 {
   font-family: var(--serif);
   font-size: clamp(2rem, 3.5vw, 3.5rem);
@@ -1126,8 +1130,10 @@ h2 {
 .project::before { width: 3px; }
 .project:focus-within { background: #f8eee3; }
 .project:first-child:focus-within { background: var(--cool); }
+.project-graphics:focus-within { background: #f3d3c2; }
 @media (hover: hover) {
   .project:first-child:hover { background: var(--cool); }
+  .project-graphics:hover { background: #f3d3c2; }
 }
 
 .learning.frame {
