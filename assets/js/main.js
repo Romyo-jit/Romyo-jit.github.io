@@ -1,8 +1,7 @@
 (() => {
   "use strict";
 
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const cursorMotion = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+  const cursorMotion = window.matchMedia("(hover: hover) and (pointer: fine)");
   const cursor = document.createElement("div");
   cursor.className = "cursor-halo";
   cursor.setAttribute("aria-hidden", "true");
@@ -68,7 +67,6 @@
   let backgroundScrollFrame = null;
   function moveBackgroundArtifacts() {
     backgroundScrollFrame = null;
-    if (reducedMotion.matches) return;
     document.querySelectorAll("[data-depth]").forEach(egg => {
       const depth = Number(egg.dataset.depth);
       egg.style.setProperty("--scroll-shift", window.scrollY * depth + "px");
@@ -83,7 +81,7 @@
     event.preventDefault();
     window.scrollTo({
       top: 0,
-      behavior: reducedMotion.matches ? "auto" : "smooth"
+      behavior: "smooth"
     });
   });
 
@@ -131,61 +129,59 @@
   function animateAtom(time) {
     const delta = Math.min((time - previousAtomTime) / 16.67, 2);
     previousAtomTime = time;
-    if (!reducedMotion.matches) {
-      for (let firstIndex = 0; firstIndex < atomControllers.length; firstIndex++) {
-        for (let secondIndex = firstIndex + 1; secondIndex < atomControllers.length; secondIndex++) {
-          const first = atomControllers[firstIndex];
-          const second = atomControllers[secondIndex];
-          const firstElement = first.element;
-          const secondElement = second.element;
-          const firstCenterX = first.x + firstElement.offsetWidth / 2;
-          const firstCenterY = first.y + firstElement.offsetHeight / 2;
-          const secondCenterX = second.x + secondElement.offsetWidth / 2;
-          const secondCenterY = second.y + secondElement.offsetHeight / 2;
-          const distanceX = secondCenterX - firstCenterX;
-          const distanceY = secondCenterY - firstCenterY;
-          const distance = Math.max(Math.hypot(distanceX, distanceY), 1);
-          const repulsionRadius = 300;
-          if (distance >= repulsionRadius) continue;
-          const repulsion = (1 - distance / repulsionRadius) * .05 * delta;
-          const forceX = distanceX / distance * repulsion;
-          const forceY = distanceY / distance * repulsion;
-          first.velocityX -= forceX;
-          first.velocityY -= forceY;
-          second.velocityX += forceX;
-          second.velocityY += forceY;
-        }
+    for (let firstIndex = 0; firstIndex < atomControllers.length; firstIndex++) {
+      for (let secondIndex = firstIndex + 1; secondIndex < atomControllers.length; secondIndex++) {
+        const first = atomControllers[firstIndex];
+        const second = atomControllers[secondIndex];
+        const firstElement = first.element;
+        const secondElement = second.element;
+        const firstCenterX = first.x + firstElement.offsetWidth / 2;
+        const firstCenterY = first.y + firstElement.offsetHeight / 2;
+        const secondCenterX = second.x + secondElement.offsetWidth / 2;
+        const secondCenterY = second.y + secondElement.offsetHeight / 2;
+        const distanceX = secondCenterX - firstCenterX;
+        const distanceY = secondCenterY - firstCenterY;
+        const distance = Math.max(Math.hypot(distanceX, distanceY), 1);
+        const repulsionRadius = 300;
+        if (distance >= repulsionRadius) continue;
+        const repulsion = (1 - distance / repulsionRadius) * .05 * delta;
+        const forceX = distanceX / distance * repulsion;
+        const forceY = distanceY / distance * repulsion;
+        first.velocityX -= forceX;
+        first.velocityY -= forceY;
+        second.velocityX += forceX;
+        second.velocityY += forceY;
       }
-      atomControllers.forEach(controller => {
-        const element = controller.element;
-        controller.gravityTimer -= delta;
-        if (controller.gravityTimer <= 0) {
-          controller.gravityAngle = Math.random() * Math.PI * 2;
-          controller.gravityTimer = 90 + Math.random() * 180;
-        }
-        controller.velocityX += Math.cos(controller.gravityAngle) * .012 * delta;
-        controller.velocityY += Math.sin(controller.gravityAngle) * .012 * delta;
-        const atomCenterX = controller.x + element.offsetWidth / 2;
-        const atomCenterY = controller.y + element.offsetHeight / 2;
-        controller.velocityX += (pointerX - atomCenterX) * .00012 * delta;
-        controller.velocityY += (pointerY - atomCenterY) * .00012 * delta;
-        controller.velocityX *= .995;
-        controller.velocityY *= .995;
-        controller.x += controller.velocityX * delta;
-        controller.y += controller.velocityY * delta;
-        if (controller.x <= 0 || controller.x >= window.innerWidth - element.offsetWidth) {
-          controller.x = Math.max(0, Math.min(window.innerWidth - element.offsetWidth, controller.x));
-          controller.velocityX *= -.82;
-        }
-        if (controller.y <= 0 || controller.y >= window.innerHeight - element.offsetHeight) {
-          controller.y = Math.max(0, Math.min(window.innerHeight - element.offsetHeight, controller.y));
-          controller.velocityY *= -.82;
-        }
-        element.style.left = controller.x + "px";
-        element.style.top = controller.y + "px";
-        element.style.right = "auto";
-      });
     }
+    atomControllers.forEach(controller => {
+      const element = controller.element;
+      controller.gravityTimer -= delta;
+      if (controller.gravityTimer <= 0) {
+        controller.gravityAngle = Math.random() * Math.PI * 2;
+        controller.gravityTimer = 90 + Math.random() * 180;
+      }
+      controller.velocityX += Math.cos(controller.gravityAngle) * .012 * delta;
+      controller.velocityY += Math.sin(controller.gravityAngle) * .012 * delta;
+      const atomCenterX = controller.x + element.offsetWidth / 2;
+      const atomCenterY = controller.y + element.offsetHeight / 2;
+      controller.velocityX += (pointerX - atomCenterX) * .00012 * delta;
+      controller.velocityY += (pointerY - atomCenterY) * .00012 * delta;
+      controller.velocityX *= .995;
+      controller.velocityY *= .995;
+      controller.x += controller.velocityX * delta;
+      controller.y += controller.velocityY * delta;
+      if (controller.x <= 0 || controller.x >= window.innerWidth - element.offsetWidth) {
+        controller.x = Math.max(0, Math.min(window.innerWidth - element.offsetWidth, controller.x));
+        controller.velocityX *= -.82;
+      }
+      if (controller.y <= 0 || controller.y >= window.innerHeight - element.offsetHeight) {
+        controller.y = Math.max(0, Math.min(window.innerHeight - element.offsetHeight, controller.y));
+        controller.velocityY *= -.82;
+      }
+      element.style.left = controller.x + "px";
+      element.style.top = controller.y + "px";
+      element.style.right = "auto";
+    });
     requestAnimationFrame(animateAtom);
   }
   requestAnimationFrame(animateAtom);
@@ -290,7 +286,7 @@
     typing?.destroy();
     typing = null;
     interest.textContent = "Programming, Photography, and Mathematics.";
-    if (reducedMotion.matches || !window.Typed) return;
+    if (!window.Typed) return;
     interest.textContent = "";
     typing = new Typed(interest, {
       strings: ["Programming", "Photography", "Mathematics"],
@@ -302,7 +298,58 @@
   }
 
   updateTyping();
-  reducedMotion.addEventListener("change", updateTyping);
+  const portrait = document.querySelector(".portrait");
+  const portraitMotion = window.matchMedia("(hover: hover) and (pointer: fine)");
+  function resetPortrait() {
+    portrait.style.removeProperty("--portrait-tilt-x");
+    portrait.style.removeProperty("--portrait-tilt-y");
+    portrait.style.removeProperty("--portrait-light-x");
+    portrait.style.removeProperty("--portrait-light-y");
+    portrait.classList.remove("is-tilting");
+  }
+  portrait.addEventListener("pointermove", event => {
+    if (!portraitMotion.matches || event.pointerType === "touch") return;
+    const bounds = portrait.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+    const y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+    portrait.style.setProperty("--portrait-tilt-x", (3 - y * 6) + "deg");
+    portrait.style.setProperty("--portrait-tilt-y", (x * 6 - 3) + "deg");
+    portrait.style.setProperty("--portrait-light-x", (x * 100) + "%");
+    portrait.style.setProperty("--portrait-light-y", (y * 100) + "%");
+    portrait.classList.add("is-tilting");
+  });
+  portrait.addEventListener("pointerleave", resetPortrait);
+  portraitMotion.addEventListener("change", resetPortrait);
+
+  let touchStart = null;
+  document.addEventListener("pointerdown", event => {
+    if (event.pointerType !== "touch") return;
+    touchStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+  }, { passive: true });
+  document.addEventListener("pointercancel", () => { touchStart = null; }, { passive: true });
+  document.addEventListener("pointerup", event => {
+    if (event.pointerType !== "touch" || !touchStart || touchStart.id !== event.pointerId) return;
+    const distance = Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y);
+    touchStart = null;
+    if (distance > 10 || !Element.prototype.animate) return;
+    if (event.target.closest("a, button, input, select, textarea, video")) return;
+    const photo = event.target.closest(".portrait-image");
+    if (photo) {
+      photo.animate([
+        { transform: "scale(1)", filter: "brightness(1)" },
+        { transform: "scale(1.025)", filter: "brightness(1.12)" },
+        { transform: "scale(1)", filter: "brightness(1)" }
+      ], { duration: 550, easing: "ease-in-out" });
+      return;
+    }
+    const text = event.target.closest("main h1, main h2, main h3, main p, main figcaption, main dt, main dd, .skill-group li, .tools li");
+    if (!text) return;
+    text.animate([
+      { transform: "translateY(0) rotate(0deg)" },
+      { transform: "translateY(-4px) rotate(-0.6deg)" },
+      { transform: "translateY(0) rotate(0deg)" }
+    ], { duration: 450, easing: "ease-in-out" });
+  }, { passive: true });
 
   if (!("IntersectionObserver" in window) || !Element.prototype.animate) return;
 
@@ -310,9 +357,8 @@
     entries.forEach(({ target, isIntersecting }) => {
       if (!isIntersecting) return;
       observer.unobserve(target);
-      if (reducedMotion.matches) return;
-
       // Animate only on arrival. Content remains visible without JavaScript.
+      if (target === portrait) portrait.classList.add("has-arrived");
       target.animate([
         { opacity: 0, transform: "translateY(24px)" },
         { opacity: 1, transform: "translateY(0)" }
@@ -329,8 +375,4 @@
   ).forEach(element => observer.observe(element));
 
 
-  reducedMotion.addEventListener("change", () => {
-    if (!reducedMotion.matches) return;
-    document.getAnimations().forEach(animation => animation.cancel());
-  });
 })();

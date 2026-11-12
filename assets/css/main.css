@@ -363,6 +363,37 @@ h2 {
 
 .portrait { background: var(--warm); }
 .portrait img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; object-position: center 40%; }
+.portrait-image { position: relative; overflow: hidden; }
+.portrait-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at var(--portrait-light-x, 50%) var(--portrait-light-y, 50%), #fff6dc88, transparent 45%),
+              linear-gradient(120deg, transparent 28%, #f8c48c66 45%, #cddfd455 52%, transparent 67%);
+}
+@media all {
+  .portrait.has-arrived .portrait-image::after {
+    animation: portrait-glint 1.5s ease-out .45s both;
+  }
+  @keyframes portrait-glint {
+    0%, 100% { opacity: 0; background-position: -250px 0; }
+    35% { opacity: .4; }
+    80% { opacity: .25; background-position: 250px 0; }
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .portrait {
+    transform: perspective(1000px) rotateX(var(--portrait-tilt-x, 0deg)) rotateY(var(--portrait-tilt-y, 0deg));
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .portrait.is-tilting { box-shadow: 11px 10px 0 var(--ink); }
+  .portrait.is-tilting .portrait-image::after {
+    animation: none;
+    opacity: .25;
+  }
+}
 .portrait figcaption {
   display: flex;
   justify-content: space-between;
@@ -522,12 +553,9 @@ h2 {
   .footer-inner { font-size: .72rem; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-}
 
 /* Motion follows the same crisp, physical feel as the borders and shadows. */
-@media (prefers-reduced-motion: no-preference) {
+@media all {
   .button, .header-github {
     transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
   }
@@ -543,7 +571,7 @@ h2 {
 
 }
 
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
   .button:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
   .header-github:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 var(--ink); }
   .button:active { transform: translate(4px, 4px); box-shadow: none; }
@@ -697,7 +725,7 @@ h2 {
   .project:hover::before { opacity: 1; }
   .project:hover { background: #f8eee3; }
 }
-@media (prefers-reduced-motion: no-preference) {
+@media all {
   h1 .hero-handle,
   .egg-cross-label {
     animation: handle-sway 2.8s ease-in-out infinite;
@@ -841,7 +869,7 @@ h2 {
 
 
 .cursor-halo { display: none; }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) and (pointer: fine) {
   body,
   body * {
     cursor: none !important;
@@ -915,7 +943,7 @@ h2 {
   rotate: 12deg;
   pointer-events: none;
 }
-@media (prefers-reduced-motion: no-preference) {
+@media all {
   body::before { animation: background-cross 5s ease-in-out infinite; }
   body::after { animation: background-orbit 9s ease-in-out infinite; }
   .site-easter-egg.is-popped { animation: egg-pop 450ms ease-out; }
@@ -977,9 +1005,6 @@ h2 {
     50% { rotate: -12deg; scale: .8; }
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .status-scribble path { stroke-dashoffset: 0; }
-}
 
 
 .project-media { min-width: 0; display: grid; gap: .65rem; }
@@ -997,7 +1022,7 @@ h2 {
   .hero h1:hover { text-shadow: 3px 3px 0 var(--accent); }
   .learning h2:hover { text-shadow: 3px 3px 0 var(--ink); }
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) and (pointer: fine) {
   main :is(h1, h2, h3, p, figcaption, dt, dd, .skill-group li, .tools li) {
     transform-origin: left center;
     transition: translate 220ms ease, rotate 220ms ease, text-shadow 220ms ease;
@@ -1164,7 +1189,7 @@ h2 {
 .contact a > span:last-child { font-size: 1.3rem; line-height: 1; }
 .contact a:hover, .contact a:focus-visible { background: var(--highlight); }
 .contact a:focus-visible { outline-offset: 3px; }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
   .contact a { transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
   .contact a:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
 }
