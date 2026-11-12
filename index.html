@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Romyo — Romyojit Paul</title>
-  <meta name="description" content="Romyojit Paul's personal portfolio, projects, skills, and what he's learning.">
+  <meta name="description" content="Romyojit's corner of the internet for code, projects, and whatever he's learning next.">
   <link rel="icon" href="assets/img/R_img.jpg">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
   <button class="site-easter-egg egg-spark" data-depth=".08" type="button" aria-label="Change the site colors">*</button>
   <button class="site-easter-egg egg-ring" data-depth="-.05" type="button" aria-label="Change the site colors">o</button>
@@ -23,9 +23,9 @@
   <button class="site-easter-egg web3-node" data-depth="-.07" type="button" aria-label="Change the site colors"></button>
   <header id="header" class="site-header">
     <div class="wrap header-inner">
-      <a class="brand" href="#hero"><img src="assets/img/newpfp.jpeg" alt="Romyojit Paul" width="36" height="36">romy0x1337</a>
+      <a class="brand" href="#top"><img src="assets/img/newpfp.jpeg" alt="Romyojit Paul" width="36" height="36">romy0x1337</a>
       <nav id="navmenu" aria-label="Main navigation">
-        <a href="#hero">Home</a>
+        <a href="#top">Home</a>
         <a href="#about">About</a>
         <a href="#resume">Projects</a>
         <a href="#contact">Contact</a>
@@ -80,7 +80,7 @@
     <section id="about" class="section about">
       <div class="about-copy">
         <h2>About me</h2>
-        <p>Hi there! I'm Romyo, just a guy who loves diving into the world of technology. I spend a lot of time exploring AI/ML, Robotics, Networking, and Pentesting because I find it fascinating to figure out how things work. I also enjoy photography, it’s a great way to spark new ideas. And when I’m not doing all that, you’ll probably find me playing games, which is my favorite way to unwind and have fun. Also I love Mathematics :)</p>
+        <p>Hey, I'm Romyo! I'm a CS student from Kolkata who loves figuring out what makes things tick. You'll usually find me exploring Linux, networking, AI/ML, robotics, or pentesting, and probably getting distracted by some math along the way. I like learning by building stuff, breaking it, and trying again. When I'm away from the keyboard, I'm into photography and games :)</p>
         <dl class="profile-facts">
           <div><dt>City</dt><dd>Kolkata</dd></div>
           <div><dt>Age</dt><dd>19</dd></div>
@@ -126,7 +126,7 @@
           <figcaption>
             <div>
               <h3>Coding activity</h3>
-              <p>Time by language and file type, tracked with WakaTime.</p>
+              <p>What I've been coding, tracked by WakaTime.</p>
             </div>
             <a href="https://wakatime.com/share/@7bd8279d-fa31-4eff-8ddc-ee2da52b3ada/9155a98f-f21a-4058-8bf3-ba2c17582008.png">Full-size chart <span aria-hidden="true">↗</span></a>
           </figcaption>
@@ -138,14 +138,14 @@
     <section id="resume" class="section">
       <div class="section-heading">
         <h2>Projects</h2>
-        <p>I am continually expanding my knowledge in the field of technology. As part of this journey, I have developed several open-source projects, which are hosted on GitHub and listed below.</p>
+        <p>A mix of ideas, experiments, and things I've built while figuring stuff out. Here's what I've been working on.</p>
       </div>
       <div class="projects frame">
         <article class="project">
           <p class="category">Algorithms</p>
           <div>
             <h3>Sorting Algorithm Visualizer</h3>
-            <p>A Python visualization of Bubble Sort and Selection Sort. Color-coded bars show comparisons, swaps, and sorted positions as the algorithms work through a randomly generated array.</p>
+            <p>Ever wanted to watch a sorting algorithm do its thing? This Python visualizer brings Bubble Sort and Selection Sort to life with color-coded comparisons and swaps.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>Matplotlib</li><li>NumPy</li></ul>
           </div>
           <div class="project-media">
@@ -154,10 +154,22 @@
           </div>
         </article>
         <article class="project">
+          <p class="category">Computer graphics</p>
+          <div>
+            <h3>3D Perspective Projection</h3>
+            <p>A spinning 3D cube, built with Python and Pygame. I used matrix rotations and perspective projection to bring 3D coordinates onto a 2D screen. Turns out math and graphics make a pretty cool team.</p>
+            <ul class="tools" aria-label="Tools used"><li>Python</li><li>Pygame</li><li>Math</li></ul>
+          </div>
+          <div class="project-media">
+            <a class="project-preview" href="https://www.linkedin.com/posts/romyojit-paul-857013308_python-computergraphics-pygame-activity-7435373619255394305-itLZ" aria-label="View the 3D projection project on LinkedIn"><img src="assets/img/projects/projection-3d.gif" alt="Animated demo of a rotating 3D cube" loading="lazy"></a>
+            <a class="project-link" href="https://www.linkedin.com/posts/romyojit-paul-857013308_python-computergraphics-pygame-activity-7435373619255394305-itLZ">LinkedIn post <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+        <article class="project">
           <p class="category">Hackathon</p>
           <div>
             <h3>AgriTech-HelpX</h3>
-            <p>A hackathon project exploring direct connections between farmers and buyers. The proposed platform combines market information, crop-price forecasting, and location-based matching to help farmers make selling decisions.</p>
+            <p>A hackathon idea for connecting farmers directly with buyers. We explored a platform with market info, crop-price forecasting, and location-based matching to help with selling decisions.</p>
             <ul class="tools" aria-label="Tools used"><li>HTML</li></ul>
           </div>
           <a class="project-link" href="https://github.com/Romyo-jit/AgriTech-HelpX" aria-label="AgriTech-HelpX on GitHub">GitHub <span aria-hidden="true">↗</span></a>
@@ -166,7 +178,7 @@
           <p class="category">Mathematics</p>
           <div>
             <h3>Graphs &amp; Symbolic Math</h3>
-            <p>A collection of Python scripts for calculations in calculus and linear algebra, alongside graph plotting. This brings together my interest in mathematics and programming through numerical and symbolic computation.</p>
+            <p>Math meets Python. A little collection of scripts for calculus, linear algebra, and plotting graphs, because sometimes it's fun to let code do the calculations.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>SciPy</li><li>Matplotlib</li><li>NumPy</li><li>SymPy</li></ul>
           </div>
           <a class="project-link" href="https://github.com/Romyo-jit/Graphs-And-Symbolic-Math" aria-label="Graphs &amp; Symbolic Math on GitHub">GitHub <span aria-hidden="true">↗</span></a>
@@ -175,7 +187,7 @@
           <p class="category">Cybersecurity</p>
           <div>
             <h3>USB Autorun</h3>
-            <p>This is a project to run a script when a usb is connected(Like Rubber Ducky). Usb Rubber Ducky has a inbuilt microcontroller which automatically runs the code when usb is connected, But I have made this to run script without Microcontroller.</p>
+            <p>Inspired by the USB Rubber Ducky, this experiment runs a script when a USB drive is connected, without a microcontroller. It uses a Python monitor running on the computer and a Visual Basic script on the drive.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>Visual Basic</li><li>USB</li></ul>
           </div>
           <a class="project-link" href="https://github.com/Romyo-jit/Usb_Autorun" aria-label="USB Autorun on GitHub">GitHub <span aria-hidden="true">↗</span></a>
@@ -184,7 +196,7 @@
           <p class="category">Cybersecurity</p>
           <div>
             <h3>Radio Interceptor</h3>
-            <p>It's a radio wave interceptor made with Python. I used the FFT (Fast Fourier Transform) in the Scipy library to decode the radio wave signals. I haven't posted it anywhere because it's still incomplete and it needs an RTL-SDR receiver, which is expensive.</p>
+            <p>An unfinished Python experiment with radio signals and SciPy's Fast Fourier Transform. It's still waiting on an RTL-SDR receiver, which is a little pricey, so I haven't posted it yet.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>RTL-SDR Receiver</li></ul>
           </div>
         </article>
@@ -192,7 +204,7 @@
           <p class="category">Web</p>
           <div>
             <h3>Random Reddit Memes Generator in Python</h3>
-            <p>This is a random meme finder which uses python script to bring memes from reddit in 1 second interval and shows it to the webpage.</p>
+            <p>A Python script that pulls random Reddit memes and shows them on a webpage, refreshing every second. Sometimes a project just needs to be fun.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>HTML</li></ul>
           </div>
           <a class="project-link" href="https://github.com/Romyo-jit/Random-Reddit-Memes" aria-label="Random Reddit Memes Generator on GitHub">GitHub <span aria-hidden="true">↗</span></a>
@@ -201,7 +213,7 @@
           <p class="category">Professional website</p>
           <div>
             <h3>Portfolio Website</h3>
-            <p>A personal portfolio website I made to write up my progress.</p>
+            <p>The site you're on right now! I built it to share my projects and keep track of how far I've come.</p>
             <ul class="tools" aria-label="Tools used"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
           </div>
           <a class="project-link" href="https://github.com/Romyo-jit/Romyo-jit.github.io" aria-label="Portfolio Website on GitHub">GitHub <span aria-hidden="true">↗</span></a>
@@ -210,7 +222,7 @@
           <p class="category">Unhosted</p>
           <div>
             <h3>Minecraft Bot</h3>
-            <p>It's a Minecraft bot which connects to specified server with port. Then it can be commanded to mine or used as afk bot.</p>
+            <p>A bot that joins a Minecraft server using its address and port. You can tell it to mine or let it hang out as an AFK bot.</p>
             <ul class="tools" aria-label="Tools used"><li>Python</li><li>Jupyter Notebook</li><li>JavaScript</li></ul>
           </div>
         </article>
@@ -219,13 +231,13 @@
 
     <section id="testimonials" class="section learning frame">
       <h2>Current status<svg class="status-scribble" viewBox="0 0 240 18" aria-hidden="true"><path d="M2 10C38 16 67 4 105 10S177 16 238 7"></path></svg></h2>
-      <p>I am currently learning all the basics math and theory of Machine Learning from the free resources on the Internet, mainly from Stanford CS229-Autumn ML course of 2018. Then I'm planning to learn the necessary tools of python to implement or make some projects using Machine Learning ^_^</p>
+      <p>Right now I'm getting deeper into data structures and algorithms and exploring machine learning with Python. I'm working through the math and theory too, including Stanford's CS229 materials, and learning more about Linux, networking, and security along the way. Lots to figure out, which is the fun part ^_^</p>
     </section>
 
     <section id="contact" class="section">
       <h2>Contact</h2>
       <div class="contact-intro">
-        <p>Find me online or around Kolkata.</p>
+        <p>Wanna connect? Find me online or around Kolkata.</p>
         <a class="contact-location" href="https://www.google.com/maps?ll=22.535427,88.347353&amp;z=10&amp;t=m&amp;hl=en&amp;gl=IN&amp;mapclient=embed&amp;q=Kolkata+West+Bengal">Kolkata, India <span aria-hidden="true">↗</span></a>
       </div>
       <ul class="contact">
