@@ -120,7 +120,7 @@
     summoned.style.left = 8 + Math.random() * 76 + "vw";
     summoned.style.top = 10 + Math.random() * 72 + "vh";
     summoned.style.right = "auto";
-    document.body.append(summoned);
+    atom.parentElement.append(summoned);
     summonedAtoms.push(summoned);
     createAtomController(summoned, .55);
     if (summonedAtoms.length > 3) {
