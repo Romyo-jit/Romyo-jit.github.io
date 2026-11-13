@@ -201,9 +201,10 @@ nav a:hover { text-decoration: underline; }
 .hero-copy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: var(--hero-inset);
+  text-align: center;
 }
 
 .eyebrow, .category, .profile-facts dt, .contact a > span:first-child {
@@ -220,6 +221,7 @@ h1 {
   font: clamp(4rem, 10.6vw, 9rem)/.89 var(--display);
   letter-spacing: -.105em;
 }
+.hero-copy h1 { margin-left: 0; }
 h1 span { color: var(--warm); margin-left: .03em; }
 h1 .hero-name { margin-left: 0; color: var(--highlight); }
 h1 .hero-handle {
