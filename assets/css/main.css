@@ -245,7 +245,9 @@ h1 .hero-handle {
 
 .music-player {
   display: grid;
-  gap: .15rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .2rem .5rem;
+  align-items: center;
   width: 100%;
   margin-top: .75rem;
   padding: .35rem .7rem;
@@ -256,8 +258,10 @@ h1 .hero-handle {
 }
 .music-player-heading {
   display: flex;
-  justify-content: space-between;
+  grid-column: 1 / -1;
   align-items: center;
+  gap: .65rem;
+  min-width: 0;
 }
 .music-player-title, .music-player-status {
   font: 600 .7rem/1.5 var(--mono);
@@ -267,13 +271,20 @@ h1 .hero-handle {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: .04em;
+  white-space: nowrap;
 }
 .music-track-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--ink);
-  font: 700 1.1rem/1.1 "Instrument Sans", system-ui, sans-serif;
+  font: 700 1rem/1.25 "Instrument Sans", system-ui, sans-serif;
 }
 .music-player-signal {
   display: flex;
+  margin-left: auto;
+  flex-shrink: 0;
   align-items: end;
   gap: 3px;
   height: 1rem;
@@ -289,15 +300,18 @@ h1 .hero-handle {
 .music-player-signal i:nth-child(4) { height: 100%; }
 .music-progress {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: .55rem;
+  gap: .3rem;
+  min-width: 0;
 }
 .music-time {
   font: 600 .65rem/1 var(--mono);
 }
 .music-progress input {
   width: 100%;
+  min-width: 0;
+  min-height: 44px;
   margin-block: 2px;
   accent-color: var(--accent);
   cursor: pointer;
@@ -305,12 +319,12 @@ h1 .hero-handle {
 .music-player-controls {
   display: flex;
   justify-content: center;
-  gap: .65rem;
+  gap: .35rem;
 }
 .music-player-controls button {
-  min-width: 2.4rem;
-  min-height: 1.8rem;
-  padding: .35rem .55rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: .25rem;
   border: 2px solid var(--ink);
   box-shadow: 3px 3px 0 var(--ink);
   background: var(--highlight);
@@ -324,15 +338,17 @@ h1 .hero-handle {
   box-shadow: none;
 }
 .music-player-controls .music-play {
-  min-width: 3.2rem;
+  min-width: 44px;
   background: var(--accent);
   color: var(--white);
 }
 .music-player-status {
+  grid-column: 1 / -1;
   min-height: 0;
   margin: 0;
   color: var(--accent);
 }
+.music-player-status:empty { display: none; }
 .opening {
   display: flex;
   flex-direction: column;
@@ -1079,7 +1095,7 @@ h2 {
 }
 
 /* Give each part of the page its own visual rhythm. */
-#about { margin-top: clamp(4rem, 11vw, 9rem); }
+#about { margin-top: clamp(2rem, 3.5vw, 4rem); }
 #about .about-copy { max-width: 38rem; }
 #about .portrait { margin-top: 2rem; }
 
