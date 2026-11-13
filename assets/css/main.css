@@ -75,10 +75,10 @@ footer { position: relative; z-index: 0; }
 }
 .egg-spark { top: 38vh; left: 2vw; }
 .egg-ring { right: 2vw; bottom: 24vh; border: 2px solid currentColor; border-radius: 50%; font-size: 0; }
-.egg-cross { right: 7vw; top: 18vh; }
+.egg-cross { z-index: 0; right: 7vw; top: 18vh; }
 .egg-cross-label {
   position: fixed;
-  z-index: 3;
+  z-index: 0;
   top: calc(18vh + 29px);
   right: calc(7vw - 8px);
   width: 56px;
