@@ -56,19 +56,13 @@
   document.addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
   const colorEggs = document.querySelectorAll(".site-easter-egg");
-  const colorPalettes = [
-    { accent: "#79334d", highlight: "#f8c48c", warm: "#f3a294" },
-    { accent: "#315c68", highlight: "#f4d06f", warm: "#e89b7b" },
-    { accent: "#5b416b", highlight: "#f1c27d", warm: "#d99ac5" },
-    { accent: "#2f5d50", highlight: "#f2c879", warm: "#e49a7a" }
-  ];
+  const colorPalettes = ["burgundy", "tidal", "iris", "grove"];
+  let currentPalette = 0;
   colorEggs.forEach(egg => {
     egg.addEventListener("click", () => {
-      const palette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
-      const root = document.documentElement;
-      root.style.setProperty("--accent", palette.accent);
-      root.style.setProperty("--highlight", palette.highlight);
-      root.style.setProperty("--warm", palette.warm);
+      currentPalette = (currentPalette + 1) % colorPalettes.length;
+      document.documentElement.dataset.theme = colorPalettes[currentPalette];
+      document.dispatchEvent(new Event("portfolio-theme-change"));
       egg.classList.remove("is-popped");
       void egg.offsetWidth;
       egg.classList.add("is-popped");

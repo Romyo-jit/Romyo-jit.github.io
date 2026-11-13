@@ -38,12 +38,13 @@
   `;
   const fragmentSource = `
     precision mediump float;
+    uniform vec3 dotColor;
     varying float depth;
     void main() {
       float d = length(gl_PointCoord - vec2(.5));
       if (d > .5) discard;
       float edge = 1.0 - smoothstep(.30, .5, d);
-      gl_FragColor = vec4(.18, .20, .28, edge * mix(.4, .75, depth));
+      gl_FragColor = vec4(dotColor, edge * mix(.4, .75, depth));
     }
   `;
 
@@ -87,9 +88,16 @@
   gl.enableVertexAttribArray(pointLocation);
   gl.vertexAttribPointer(pointLocation, 3, gl.FLOAT, false, 0, 0);
   const uniforms = {};
-  ["resolution", "time", "pixelRatio", "dotSize", "pointer"].forEach(name => {
+  ["resolution", "time", "pixelRatio", "dotSize", "pointer", "dotColor"].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, name);
   });
+  let dotColor = [46 / 255, 51 / 255, 71 / 255];
+  function updateDotColor() {
+    const parts = getComputedStyle(document.documentElement).getPropertyValue("--dot-rgb").split(",").map(Number);
+    if (parts.length === 3 && parts.every(Number.isFinite)) dotColor = parts.map(value => value / 255);
+  }
+  updateDotColor();
+  document.addEventListener("portfolio-theme-change", updateDotColor);
   gl.enable(gl.BLEND);
   gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(0, 0, 0, 0);
@@ -134,6 +142,7 @@
     gl.uniform1f(uniforms.pixelRatio, dpr);
     gl.uniform1f(uniforms.dotSize, mobile.matches ? 4.0 : 2.3);
     gl.uniform2f(uniforms.pointer, pointerX, pointerY);
+    gl.uniform3fv(uniforms.dotColor, dotColor);
     gl.drawArrays(gl.POINTS, 0, count);
     frame = requestAnimationFrame(draw);
   }
