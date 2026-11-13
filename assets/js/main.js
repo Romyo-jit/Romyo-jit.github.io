@@ -1,6 +1,16 @@
 (() => {
   "use strict";
 
+  const header = document.querySelector(".site-header");
+  const opening = document.querySelector(".opening");
+  function updateOpeningLayout() {
+    document.documentElement.style.setProperty("--header-height", header.getBoundingClientRect().height + "px");
+    opening.style.setProperty("--opening-gutter", opening.getBoundingClientRect().left + "px");
+  }
+  updateOpeningLayout();
+  window.addEventListener("resize", updateOpeningLayout);
+  if ("ResizeObserver" in window) new ResizeObserver(updateOpeningLayout).observe(header);
+
   const cursorMotion = window.matchMedia("(hover: hover) and (pointer: fine)");
   const cursor = document.createElement("div");
   cursor.className = "cursor-halo";
