@@ -197,6 +197,36 @@ nav a:hover { text-decoration: underline; }
   color: var(--white);
 }
 .hero.frame { box-shadow: none; }
+.hero.has-spacetime { color: #321e29; }
+.has-spacetime .hero-copy { text-shadow: 0 1px 8px #e2d8df88; }
+.has-spacetime .hero-copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: min(100%, 42rem);
+  height: min(80%, 19rem);
+  background: radial-gradient(ellipse, #e2d8dfee 0%, #e2d8dfd9 42%, #e2d8df00 75%);
+  pointer-events: none;
+}
+.hero-copy h1 {
+  font-family: "Space Grotesk", "Instrument Sans", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -.065em;
+}
+.has-spacetime h1 .hero-name { color: #321e29; }
+.has-spacetime h1 .hero-handle { color: #79334d; }
+.has-spacetime .typed-interest { color: #79334d; }
+.has-spacetime .music-player {
+  background: linear-gradient(110deg, #f0e5e0db, #dcd5dfd9);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  color: #321e29;
+}
+.has-spacetime .music-player-title { color: #79334d; }
+.has-spacetime .music-track-name, .has-spacetime .music-player-status { color: #321e29; }
+.has-spacetime .music-player-signal i { background: #79334d; }
+.has-spacetime .music-progress input { accent-color: #79334d; }
+.has-spacetime .music-player-controls button:focus-visible { outline-color: #321e29; }
 
 .hero-copy {
   display: flex;
@@ -233,7 +263,7 @@ h1 .hero-handle {
   vertical-align: super;
 }
 
-.hero-interests { max-width: 30ch; min-height: 2.8em; font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.4; }
+.hero-interests { max-width: 30ch; min-height: 2.8em; font-family: var(--serif); font-size: clamp(1.35rem, 2.3vw, 1.7rem); line-height: 1.3; }
 .button {
   display: inline-flex;
   align-items: center;
@@ -385,8 +415,22 @@ h1 .hero-handle {
 }
 .opening > .hero { margin-top: .8rem; flex: 1; }
 
-.hero-image { position: absolute; inset: 0; z-index: -1; }
+.hero-image { position: absolute; inset: 0; z-index: -1; background: linear-gradient(135deg, #e7d6c7, #d4c8d3 55%, #bbcfcc); }
 .hero-image img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+.has-spacetime .hero-image img { visibility: hidden; }
+.spacetime-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-field-note {
+  display: none;
+  position: absolute;
+  left: var(--hero-inset);
+  bottom: 1rem;
+  color: #473846;
+  font: 600 .62rem/1 var(--mono);
+  letter-spacing: .06em;
+  pointer-events: none;
+}
+.has-spacetime .hero-field-note { display: block; }
+.hero-field-note span { color: #79334d; padding-inline: .25rem; }
 
 .section { margin-block: clamp(3.75rem, 9vw, 7rem); }
 h2 {
