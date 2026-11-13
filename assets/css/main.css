@@ -1095,7 +1095,7 @@ h2 {
 }
 
 /* Give each part of the page its own visual rhythm. */
-#about { margin-top: clamp(2rem, 3.5vw, 4rem); }
+#about { margin-top: clamp(4rem, 11vw, 9rem); }
 #about .about-copy { max-width: 38rem; }
 #about .portrait { margin-top: 2rem; }
 
