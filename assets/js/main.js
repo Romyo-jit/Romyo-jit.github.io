@@ -232,7 +232,10 @@
   const musicTracks = [
     "assets/songs/20%20min%20Lil%20uzi.mp3",
     "assets/songs/Money%20Longer.mp3",
-    "assets/songs/XO%20Tour%20Llif3.mp3"
+    "assets/songs/XO%20Tour%20Llif3.mp3",
+    "assets/songs/Jeans%202Hollis.mp3",
+    "assets/songs/Crush%202hollis.mp3",
+    "assets/songs/90210%20Travis%20Scott.mp3"
   ];
   let currentTrack = 0;
   let musicWantsPlayback = false;
