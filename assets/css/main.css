@@ -259,7 +259,7 @@ nav a:hover { text-decoration: underline; }
   z-index: -1;
   width: min(100%, 42rem);
   height: min(80%, 19rem);
-  background: radial-gradient(ellipse, rgba(var(--hero-halo-rgb), .68) 0%, rgba(var(--hero-halo-rgb), .55) 42%, rgba(var(--hero-halo-rgb), 0) 75%);
+  background: radial-gradient(ellipse, rgba(var(--hero-halo-rgb), .816) 0%, rgba(var(--hero-halo-rgb), .66) 42%, rgba(var(--hero-halo-rgb), 0) 75%);
   pointer-events: none;
 }
 .hero-copy h1 {
