@@ -238,6 +238,7 @@
     "assets/songs/Crush%20-%202hollis.mp3",
     "assets/songs/Goldeneye%20007%20-%20BER7OL1.mp3",
     "assets/songs/Jeans%20-%202Hollis.mp3",
+    "assets/songs/CONSTANTLY%20-%20Tifanny%20Dey.mp3",
     "assets/songs/Whiplash%20-%202Hollis.mp3",
     "assets/songs/XO%20Tour%20Llif3%20-%20Lil%20Uzi%20Vert.mp3"
   ];
