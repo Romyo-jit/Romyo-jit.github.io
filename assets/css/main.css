@@ -257,9 +257,10 @@ nav a:hover { text-decoration: underline; }
   content: "";
   position: absolute;
   z-index: -1;
-  width: min(100%, 42rem);
-  height: min(80%, 19rem);
-  border-radius: 50%;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
   background: radial-gradient(ellipse, rgba(var(--hero-halo-rgb), .816) 0%, rgba(var(--hero-halo-rgb), .66) 42%, rgba(var(--hero-halo-rgb), 0) 75%);
   filter: blur(14px);
   pointer-events: none;
