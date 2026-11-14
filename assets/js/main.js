@@ -327,6 +327,20 @@
   }
 
   updateTyping();
+  const heroTitle = document.querySelector(".hero-copy h1");
+  const heroLetters = heroTitle ? [...heroTitle.querySelectorAll(".hero-letter")] : [];
+  const lastHeroLetter = heroLetters[heroLetters.length - 1];
+  if (heroTitle && lastHeroLetter) {
+    heroTitle.addEventListener("pointerenter", event => {
+      if (reducedMotion.matches || event.pointerType !== "mouse") return;
+      heroTitle.classList.remove("is-hover-active");
+      void heroTitle.offsetWidth;
+      heroTitle.classList.add("is-hover-active");
+    });
+    lastHeroLetter.addEventListener("animationend", event => {
+      if (event.animationName === "hero-letter-wave") heroTitle.classList.remove("is-hover-active");
+    });
+  }
   // Give touchscreens a moment to see the same little details as hover users.
   document.querySelectorAll(".hero-copy h1, .hero-interests").forEach(element => {
     let touchEffectTimer;
