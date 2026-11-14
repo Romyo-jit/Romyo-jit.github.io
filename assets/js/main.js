@@ -1,6 +1,15 @@
 (() => {
   "use strict";
 
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const activeMotion = new Set();
+  function animateMotion(element, keyframes, options) {
+    const animation = element.animate(keyframes, options);
+    activeMotion.add(animation);
+    animation.finished.then(() => activeMotion.delete(animation), () => activeMotion.delete(animation));
+    return animation;
+  }
+
   const header = document.querySelector(".site-header");
   const opening = document.querySelector(".opening");
   function updateOpeningLayout() {
@@ -22,7 +31,7 @@
   let cursorY = cursorTargetY;
   let cursorFrame = null;
   function animateCursor() {
-    if (!cursorMotion.matches) {
+    if (!cursorMotion.matches || reducedMotion.matches) {
       cursorFrame = null;
       return;
     }
@@ -33,12 +42,12 @@
     cursorFrame = requestAnimationFrame(animateCursor);
   }
   function startCursorAnimation() {
-    if (cursorFrame === null && cursorMotion.matches) cursorFrame = requestAnimationFrame(animateCursor);
+    if (cursorFrame === null && cursorMotion.matches && !reducedMotion.matches) cursorFrame = requestAnimationFrame(animateCursor);
   }
   startCursorAnimation();
 
   document.addEventListener("pointermove", event => {
-    if (!cursorMotion.matches || event.pointerType === "touch") return;
+    if (!cursorMotion.matches || reducedMotion.matches || event.pointerType === "touch") return;
     cursorTargetX = event.clientX;
     cursorTargetY = event.clientY;
     cursor.classList.add("is-visible");
@@ -48,10 +57,13 @@
   function hideCursor() { cursor.classList.remove("is-visible"); }
   document.documentElement.addEventListener("pointerleave", hideCursor);
   window.addEventListener("blur", hideCursor);
-  cursorMotion.addEventListener("change", () => {
+  function updateCursorMotion() {
     hideCursor();
+    if (cursorFrame !== null) cancelAnimationFrame(cursorFrame);
+    cursorFrame = null;
     startCursorAnimation();
-  });
+  }
+  cursorMotion.addEventListener("change", updateCursorMotion);
   document.addEventListener("pointerdown", () => cursor.classList.add("is-pressed"));
   document.addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
@@ -72,12 +84,16 @@
   function moveBackgroundArtifacts() {
     backgroundScrollFrame = null;
     document.querySelectorAll("[data-depth]").forEach(egg => {
+      if (reducedMotion.matches) {
+        egg.style.removeProperty("--scroll-shift");
+        return;
+      }
       const depth = Number(egg.dataset.depth);
       egg.style.setProperty("--scroll-shift", window.scrollY * depth + "px");
     });
   }
   window.addEventListener("scroll", () => {
-    if (backgroundScrollFrame !== null) return;
+    if (reducedMotion.matches || backgroundScrollFrame !== null) return;
     backgroundScrollFrame = requestAnimationFrame(moveBackgroundArtifacts);
   }, { passive: true });
   moveBackgroundArtifacts();
@@ -85,7 +101,7 @@
     event.preventDefault();
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: reducedMotion.matches ? "auto" : "smooth"
     });
   });
 
@@ -130,7 +146,10 @@
     pointerY = event.clientY;
   });
   let previousAtomTime = performance.now();
+  let atomFrame = null;
   function animateAtom(time) {
+    atomFrame = null;
+    if (reducedMotion.matches) return;
     const delta = Math.min((time - previousAtomTime) / 16.67, 2);
     previousAtomTime = time;
     for (let firstIndex = 0; firstIndex < atomControllers.length; firstIndex++) {
@@ -186,9 +205,15 @@
       element.style.top = controller.y + "px";
       element.style.right = "auto";
     });
-    requestAnimationFrame(animateAtom);
+    atomFrame = requestAnimationFrame(animateAtom);
   }
-  requestAnimationFrame(animateAtom);
+  function updateAtomMotion() {
+    if (atomFrame !== null) cancelAnimationFrame(atomFrame);
+    atomFrame = null;
+    previousAtomTime = performance.now();
+    if (!reducedMotion.matches) atomFrame = requestAnimationFrame(animateAtom);
+  }
+  updateAtomMotion();
 
   const musicPlayer = document.querySelector("#music-player");
   const musicStatus = document.querySelector(".music-player-status");
@@ -290,7 +315,7 @@
     typing?.destroy();
     typing = null;
     interest.textContent = "Programming, Photography, and Mathematics.";
-    if (!window.Typed) return;
+    if (reducedMotion.matches || !window.Typed) return;
     interest.textContent = "";
     typing = new Typed(interest, {
       strings: ["Programming", "Photography", "Mathematics"],
@@ -302,6 +327,18 @@
   }
 
   updateTyping();
+  // Give touchscreens a moment to see the same little details as hover users.
+  document.querySelectorAll(".hero-copy h1, .hero-interests").forEach(element => {
+    let touchEffectTimer;
+    element.addEventListener("pointerdown", event => {
+      if (reducedMotion.matches || event.pointerType !== "touch") return;
+      clearTimeout(touchEffectTimer);
+      element.classList.remove("is-touch-active");
+      void element.offsetWidth;
+      element.classList.add("is-touch-active");
+      touchEffectTimer = setTimeout(() => element.classList.remove("is-touch-active"), 1500);
+    }, { passive: true });
+  });
   const portrait = document.querySelector(".portrait");
   const portraitMotion = window.matchMedia("(hover: hover) and (pointer: fine)");
   function resetPortrait() {
@@ -312,7 +349,7 @@
     portrait.classList.remove("is-tilting");
   }
   portrait.addEventListener("pointermove", event => {
-    if (!portraitMotion.matches || event.pointerType === "touch") return;
+    if (reducedMotion.matches || !portraitMotion.matches || event.pointerType === "touch") return;
     const bounds = portrait.getBoundingClientRect();
     const x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
     const y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
@@ -327,19 +364,19 @@
 
   let touchStart = null;
   document.addEventListener("pointerdown", event => {
-    if (event.pointerType !== "touch") return;
+    if (reducedMotion.matches || event.pointerType !== "touch") return;
     touchStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
   }, { passive: true });
   document.addEventListener("pointercancel", () => { touchStart = null; }, { passive: true });
   document.addEventListener("pointerup", event => {
-    if (event.pointerType !== "touch" || !touchStart || touchStart.id !== event.pointerId) return;
+    if (reducedMotion.matches || event.pointerType !== "touch" || !touchStart || touchStart.id !== event.pointerId) return;
     const distance = Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y);
     touchStart = null;
     if (distance > 10 || !Element.prototype.animate) return;
     if (event.target.closest("a, button, input, select, textarea, video")) return;
     const photo = event.target.closest(".portrait-image");
     if (photo) {
-      photo.animate([
+      animateMotion(photo, [
         { transform: "scale(1)", filter: "brightness(1)" },
         { transform: "scale(1.025)", filter: "brightness(1.12)" },
         { transform: "scale(1)", filter: "brightness(1)" }
@@ -348,12 +385,24 @@
     }
     const text = event.target.closest("main h1, main h2, main h3, main p, main figcaption, main dt, main dd, .skill-group li, .tools li");
     if (!text) return;
-    text.animate([
+    animateMotion(text, [
       { transform: "translateY(0) rotate(0deg)" },
       { transform: "translateY(-4px) rotate(-0.6deg)" },
       { transform: "translateY(0) rotate(0deg)" }
     ], { duration: 450, easing: "ease-in-out" });
   }, { passive: true });
+
+  reducedMotion.addEventListener("change", () => {
+    updateCursorMotion();
+    updateAtomMotion();
+    if (backgroundScrollFrame !== null) cancelAnimationFrame(backgroundScrollFrame);
+    moveBackgroundArtifacts();
+    updateTyping();
+    resetPortrait();
+    touchStart = null;
+    document.querySelectorAll(".is-touch-active").forEach(element => element.classList.remove("is-touch-active"));
+    if (reducedMotion.matches) activeMotion.forEach(animation => animation.cancel());
+  });
 
   if (!("IntersectionObserver" in window) || !Element.prototype.animate) return;
 
@@ -362,8 +411,9 @@
       if (!isIntersecting) return;
       observer.unobserve(target);
       // Animate only on arrival. Content remains visible without JavaScript.
+      if (reducedMotion.matches) return;
       if (target === portrait) portrait.classList.add("has-arrived");
-      target.animate([
+      animateMotion(target, [
         { opacity: 0, transform: "translateY(24px)" },
         { opacity: 1, transform: "translateY(0)" }
       ], {

@@ -252,17 +252,18 @@ nav a:hover { text-decoration: underline; }
 }
 .hero.frame { box-shadow: none; }
 .hero.has-spacetime { color: var(--ink); }
-.has-spacetime .hero-copy { text-shadow: 0 1px 8px rgba(var(--hero-halo-rgb), .53); }
+.has-spacetime .hero-copy { text-shadow: 0 1px 5px rgba(var(--hero-halo-rgb), .32); }
 .has-spacetime .hero-copy::before {
   content: "";
   position: absolute;
   z-index: -1;
   width: min(100%, 42rem);
   height: min(80%, 19rem);
-  background: radial-gradient(ellipse, rgba(var(--hero-halo-rgb), .93) 0%, rgba(var(--hero-halo-rgb), .85) 42%, rgba(var(--hero-halo-rgb), 0) 75%);
+  background: radial-gradient(ellipse, rgba(var(--hero-halo-rgb), .68) 0%, rgba(var(--hero-halo-rgb), .55) 42%, rgba(var(--hero-halo-rgb), 0) 75%);
   pointer-events: none;
 }
 .hero-copy h1 {
+  position: relative;
   font-family: "Space Grotesk", "Instrument Sans", system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: -.065em;
@@ -308,6 +309,23 @@ h1 {
 .hero-copy h1 { margin-left: 0; }
 h1 span { color: var(--warm); margin-left: .03em; }
 h1 .hero-name { margin-left: 0; color: var(--highlight); }
+.hero-name { white-space: nowrap; }
+.hero-name .hero-letter { display: inline-block; margin: 0; color: inherit; }
+.hero-copy h1.is-touch-active .hero-letter { animation: hero-letter-wave 850ms ease both; }
+@media (hover: hover) and (pointer: fine) {
+  .hero-copy h1:hover .hero-letter { animation: hero-letter-wave 850ms ease both; }
+}
+.hero-copy h1 .hero-letter:nth-child(2) { animation-delay: 70ms; }
+.hero-copy h1 .hero-letter:nth-child(3) { animation-delay: 140ms; }
+.hero-copy h1 .hero-letter:nth-child(4) { animation-delay: 210ms; }
+.hero-copy h1 .hero-letter:nth-child(5) { animation-delay: 280ms; }
+@keyframes hero-letter-wave {
+  0%, 100% { transform: translateY(0) rotate(0); color: inherit; }
+  45% { transform: translateY(-.11em) rotate(-4deg); color: var(--accent); }
+}
+@media (max-width: 360px) {
+  .hero-copy h1 { font-size: clamp(3.25rem, 16vw, 4rem); }
+}
 h1 .hero-handle {
   display: inline-block;
   margin-left: .12em;
@@ -318,6 +336,39 @@ h1 .hero-handle {
 }
 
 .hero-interests { max-width: 30ch; min-height: 2.8em; font-family: var(--serif); font-size: clamp(1.35rem, 2.3vw, 1.7rem); line-height: 1.3; }
+.hero-interests .typed-interest { position: relative; }
+.hero-interests .typed-interest::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -.08em;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms ease;
+}
+.hero-copy h1::after {
+  content: "";
+  position: absolute;
+  top: -.35em;
+  right: -.3em;
+  width: .17em;
+  height: .17em;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 60% 38%, 100% 50%, 60% 62%, 50% 100%, 40% 62%, 0 50%, 40% 38%);
+  opacity: 0;
+  transform: scale(.4) rotate(-35deg);
+  transition: opacity 250ms ease, transform 500ms ease;
+  pointer-events: none;
+}
+.hero-copy h1.is-touch-active::after { opacity: .9; transform: scale(1) rotate(15deg); }
+.hero-interests.is-touch-active .typed-interest::after { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  .hero-copy h1:hover::after { opacity: .9; transform: scale(1) rotate(15deg); }
+  .hero-interests:hover .typed-interest::after { transform: scaleX(1); }
+}
 .button {
   display: inline-flex;
   align-items: center;
@@ -1172,7 +1223,7 @@ h2 {
 /* Text reacts like the printed pieces elsewhere on the page. */
 @media (hover: hover) and (pointer: fine) {
   main :is(h1, h2, h3):hover { text-shadow: 2px 2px 0 var(--warm); }
-  .hero h1:hover { text-shadow: 3px 3px 0 var(--accent); }
+  .hero-copy h1:hover { text-shadow: none; }
   .learning h2:hover { text-shadow: 3px 3px 0 var(--ink); }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1364,4 +1415,30 @@ h2 {
   .contact-intro { margin-bottom: 1.5rem; }
   .contact { grid-column: 1; grid-row: auto; }
   .contact a { min-height: 92px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  body, body * { cursor: auto !important; }
+  a, button, input[type="range"], summary { cursor: pointer !important; }
+  .cursor-halo { display: none !important; }
+  .status-scribble path { stroke-dashoffset: 0; }
+  .portrait, .site-easter-egg:hover, .site-easter-egg:focus-visible,
+  .button:hover, .button:active, .header-github:hover, .contact a:hover,
+  .project-link:hover span, .contact a:hover > span:last-child,
+  .footer-inner a:hover span, .music-player-controls button:active::before {
+    transform: none !important;
+  }
+  main :is(h1, h2, h3, p, figcaption, dt, dd, .skill-group li, .tools li):hover {
+    translate: none !important;
+    rotate: none !important;
+  }
+  .section-heading h2:hover::after, .about h2:hover::after, #contact > h2:hover::after {
+    scale: none !important;
+    rotate: none !important;
+  }
 }

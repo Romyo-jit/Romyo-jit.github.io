@@ -97,7 +97,6 @@
     if (parts.length === 3 && parts.every(Number.isFinite)) dotColor = parts.map(value => value / 255);
   }
   updateDotColor();
-  document.addEventListener("portfolio-theme-change", updateDotColor);
   gl.enable(gl.BLEND);
   gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(0, 0, 0, 0);
@@ -105,6 +104,11 @@
   let width = 0;
   let height = 0;
   let dpr = 1;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let targetX = 0, targetY = 0, pointerX = 0, pointerY = 0;
+  let frame = 0;
+  let visible = true;
+  let started = 0;
   function resize() {
     const bounds = canvas.getBoundingClientRect();
     width = Math.max(bounds.width, 1);
@@ -113,39 +117,49 @@
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
+    updateAnimation();
   }
   resize();
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(hero);
   else window.addEventListener("resize", resize);
 
-  let targetX = 0, targetY = 0, pointerX = 0, pointerY = 0;
   hero.addEventListener("pointermove", event => {
-    if (event.pointerType === "touch") return;
+    if (reducedMotion.matches || event.pointerType === "touch") return;
     const bounds = hero.getBoundingClientRect();
     targetX = (event.clientX - bounds.left) / bounds.width * 2 - 1;
     targetY = (event.clientY - bounds.top) / bounds.height * 2 - 1;
   }, { passive: true });
   hero.addEventListener("pointerleave", () => { targetX = 0; targetY = 0; });
 
-  let frame = 0;
-  let visible = true;
-  let started = 0;
   function draw(now) {
     frame = 0;
     if (!visible || document.hidden || gl.isContextLost()) return;
     if (!started) started = now;
-    pointerX += (targetX - pointerX) * .04;
-    pointerY += (targetY - pointerY) * .04;
+    if (!reducedMotion.matches) {
+      pointerX += (targetX - pointerX) * .04;
+      pointerY += (targetY - pointerY) * .04;
+    }
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uniforms.resolution, width, height);
-    gl.uniform1f(uniforms.time, (now - started) / 1000);
+    gl.uniform1f(uniforms.time, reducedMotion.matches ? 0 : (now - started) / 1000);
     gl.uniform1f(uniforms.pixelRatio, dpr);
     gl.uniform1f(uniforms.dotSize, mobile.matches ? 4.0 : 2.3);
-    gl.uniform2f(uniforms.pointer, pointerX, pointerY);
+    gl.uniform2f(uniforms.pointer, reducedMotion.matches ? 0 : pointerX, reducedMotion.matches ? 0 : pointerY);
     gl.uniform3fv(uniforms.dotColor, dotColor);
     gl.drawArrays(gl.POINTS, 0, count);
-    frame = requestAnimationFrame(draw);
+    if (!reducedMotion.matches) frame = requestAnimationFrame(draw);
   }
+  reducedMotion.addEventListener("change", () => {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+    started = 0;
+    targetX = targetY = pointerX = pointerY = 0;
+    updateAnimation();
+  });
+  document.addEventListener("portfolio-theme-change", () => {
+    updateDotColor();
+    if (reducedMotion.matches) updateAnimation();
+  });
   function updateAnimation() {
     if (visible && !document.hidden && !frame) frame = requestAnimationFrame(draw);
     if ((!visible || document.hidden) && frame) {
