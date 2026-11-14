@@ -311,8 +311,8 @@ h1 span { color: var(--warm); margin-left: .03em; }
 h1 .hero-name { margin-left: 0; color: var(--highlight); }
 .hero-name { white-space: nowrap; }
 .hero-name .hero-letter { display: inline-block; margin: 0; color: inherit; }
-.hero-copy h1.is-touch-active .hero-letter { animation: hero-letter-wave 850ms ease both; }
-.hero-copy h1.is-hover-active .hero-letter { animation: hero-letter-wave 850ms ease both; }
+.hero-copy h1.is-touch-active .hero-letter { animation: hero-letter-wave 720ms ease both; }
+.hero-copy h1.is-hover-active .hero-letter { animation: hero-letter-wave 720ms ease both; }
 .hero-copy h1 .hero-letter:nth-child(2) { animation-delay: 70ms; }
 .hero-copy h1 .hero-letter:nth-child(3) { animation-delay: 140ms; }
 .hero-copy h1 .hero-letter:nth-child(4) { animation-delay: 210ms; }

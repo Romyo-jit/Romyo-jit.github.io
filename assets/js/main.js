@@ -331,12 +331,15 @@
   const heroLetters = heroTitle ? [...heroTitle.querySelectorAll(".hero-letter")] : [];
   const lastHeroLetter = heroLetters[heroLetters.length - 1];
   if (heroTitle && lastHeroLetter) {
+    let hoverAnimationReady = true;
     heroTitle.addEventListener("pointerenter", event => {
       if (reducedMotion.matches || event.pointerType !== "mouse") return;
-      if (heroTitle.classList.contains("is-hover-active")) return;
+      if (!hoverAnimationReady) return;
+      hoverAnimationReady = false;
       heroTitle.classList.remove("is-hover-active");
       void heroTitle.offsetWidth;
       heroTitle.classList.add("is-hover-active");
+      window.setTimeout(() => { hoverAnimationReady = true; }, 750);
     });
     lastHeroLetter.addEventListener("animationend", event => {
       if (event.animationName === "hero-letter-wave") heroTitle.classList.remove("is-hover-active");
@@ -345,13 +348,16 @@
   // Give touchscreens a moment to see the same little details as hover users.
   document.querySelectorAll(".hero-copy h1, .hero-interests").forEach(element => {
     let touchEffectTimer;
+    let touchAnimationReady = true;
     element.addEventListener("pointerdown", event => {
       if (reducedMotion.matches || event.pointerType !== "touch") return;
-      if (element.classList.contains("is-touch-active")) return;
+      if (!touchAnimationReady) return;
+      touchAnimationReady = false;
       clearTimeout(touchEffectTimer);
       element.classList.remove("is-touch-active");
       void element.offsetWidth;
       element.classList.add("is-touch-active");
+      window.setTimeout(() => { touchAnimationReady = true; }, 750);
       touchEffectTimer = setTimeout(() => element.classList.remove("is-touch-active"), 1500);
     }, { passive: true });
   });
