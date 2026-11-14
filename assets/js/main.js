@@ -244,6 +244,71 @@
   let currentTrack = 0;
   let musicWantsPlayback = false;
   let musicRetryTimer = null;
+  let musicHasStarted = false;
+  let musicLoadSequence = 0;
+  const preparedTracks = new Map();
+
+  function discardPreparedTrack(index) {
+    const track = preparedTracks.get(index);
+    if (!track) return;
+    preparedTracks.delete(index);
+    track.controller.abort();
+    if (track.url) URL.revokeObjectURL(track.url);
+  }
+
+  function prepareTrack(index) {
+    if (preparedTracks.has(index)) return preparedTracks.get(index).promise;
+    if (typeof fetch !== "function" || typeof AbortController !== "function" || typeof URL.createObjectURL !== "function") return Promise.resolve(null);
+    const track = { controller: new AbortController(), url: null, promise: null };
+    preparedTracks.set(index, track);
+    track.promise = fetch(musicTracks[index], { signal: track.controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error("Song download failed");
+        return response.blob();
+      })
+      .then(blob => {
+        if (preparedTracks.get(index) !== track) return null;
+        track.url = URL.createObjectURL(blob);
+        return track.url;
+      })
+      .catch(() => {
+        if (preparedTracks.get(index) === track) preparedTracks.delete(index);
+        return null;
+      });
+    return track.promise;
+  }
+
+  function keepUpcomingTracks(prepareNext = false) {
+    const keep = new Set([currentTrack]);
+    if (musicHasStarted) {
+      keep.add((currentTrack + 1) % musicTracks.length);
+      keep.add((currentTrack + 2) % musicTracks.length);
+    }
+    for (const index of preparedTracks.keys()) {
+      if (!keep.has(index)) discardPreparedTrack(index);
+    }
+    if (musicHasStarted && prepareNext) {
+      prepareTrack((currentTrack + 1) % musicTracks.length);
+      prepareTrack((currentTrack + 2) % musicTracks.length);
+    }
+  }
+
+  function setMusicSource(source) {
+    musicPlayer.src = source;
+    musicPlayer.load();
+  }
+
+  function ensureMusicSource() {
+    if (musicPlayer.getAttribute("src")) return;
+    const prepared = preparedTracks.get(currentTrack);
+    if (prepared && prepared.url) {
+      setMusicSource(prepared.url);
+    } else {
+      // Keep a play gesture immediate on mobile and avoid a duplicate download.
+      discardPreparedTrack(currentTrack);
+      setMusicSource(musicTracks[currentTrack]);
+    }
+  }
 
   function formatTime(seconds) {
     if (!Number.isFinite(seconds)) return "0:00";
@@ -264,6 +329,7 @@
 
   function playMusic() {
     if (!musicWantsPlayback || !musicPlayer.paused) return Promise.resolve(false);
+    ensureMusicSource();
     const playback = musicPlayer.play();
     if (!playback) return Promise.resolve(true);
     return playback.then(() => true).catch(() => {
@@ -281,14 +347,33 @@
   }
 
   function loadTrack(index, shouldPlay) {
+    const loadSequence = ++musicLoadSequence;
     currentTrack = (index + musicTracks.length) % musicTracks.length;
     musicTrackName.textContent = getTrackTitle(musicTracks[currentTrack]);
-    musicPlayer.src = musicTracks[currentTrack];
-    musicPlayer.load();
+    const hadSource = musicPlayer.hasAttribute("src");
+    const prepared = preparedTracks.get(currentTrack);
+    if (prepared && prepared.url) {
+      musicPlayer.src = prepared.url;
+    } else if (shouldPlay) {
+      discardPreparedTrack(currentTrack);
+      musicPlayer.src = musicTracks[currentTrack];
+    } else {
+      musicPlayer.removeAttribute("src");
+    }
+    if (musicPlayer.hasAttribute("src") || hadSource) musicPlayer.load();
     musicProgress.value = 0;
     currentTime.textContent = "0:00";
     durationTime.textContent = "0:00";
-    if (!shouldPlay) return;
+    if (!shouldPlay) {
+      const selectedTrack = currentTrack;
+      keepUpcomingTracks();
+      prepareTrack(selectedTrack).then(url => {
+        if (loadSequence !== musicLoadSequence || currentTrack !== selectedTrack || musicPlayer.getAttribute("src")) return;
+        setMusicSource(url || musicTracks[selectedTrack]);
+      });
+      return;
+    }
+    keepUpcomingTracks();
     musicWantsPlayback = true;
     playMusic();
   }
@@ -309,6 +394,10 @@
     musicProgress.value = musicPlayer.duration ? (musicPlayer.currentTime / musicPlayer.duration) * 100 : 0;
   });
   musicPlayer.addEventListener("play", updateMusicControls);
+  musicPlayer.addEventListener("playing", () => {
+    musicHasStarted = true;
+    keepUpcomingTracks(true);
+  });
   musicPlayer.addEventListener("pause", () => {
     updateMusicControls();
     if (musicWantsPlayback && !musicPlayer.ended) retryMusicAfterInterruption();
@@ -352,6 +441,9 @@
   currentTrack = Math.floor(Math.random() * musicTracks.length);
   loadTrack(currentTrack, false);
   updateMusicControls();
+  window.addEventListener("pagehide", event => {
+    if (!event.persisted) for (const index of preparedTracks.keys()) discardPreparedTrack(index);
+  });
   const interactionEvents = ["click", "touchstart", "touchend"];
   function removeInteractionMusicListeners() {
     interactionEvents.forEach(eventName => {
