@@ -230,13 +230,14 @@
   const currentTime = document.querySelector('[data-music-time="current"]');
   const durationTime = document.querySelector('[data-music-time="duration"]');
   const musicTracks = [
-    "assets/songs/20%20min%20Lil%20uzi.mp3",
-    "assets/songs/Astrothunder%20Travis%20Scott.mp3",
-    "assets/songs/Calcium%20Ecco2k.mp3",
-    "assets/songs/XO%20Tour%20Llif3.mp3",
-    "assets/songs/Jeans%202Hollis.mp3",
-    "assets/songs/Crush%202hollis.mp3",
-    "assets/songs/90210%20Travis%20Scott.mp3"
+    "assets/songs/20%20min%20-%20Lil%20Uzi%20Vert.mp3",
+    "assets/songs/90210%20-%20Travis%20Scott.mp3",
+    "assets/songs/Astrothunder%20-%20Travis%20Scott.mp3",
+    "assets/songs/BLACK%20%26%20YELLOW%20-%20BER7OL1.mp3",
+    "assets/songs/Calcium%20-%20Ecco2k.mp3",
+    "assets/songs/Crush%20-%202hollis.mp3",
+    "assets/songs/Jeans%20-%202Hollis.mp3",
+    "assets/songs/XO%20Tour%20Llif3%20-%20Lil%20Uzi%20Vert.mp3"
   ];
   let currentTrack = 0;
   let musicWantsPlayback = false;
