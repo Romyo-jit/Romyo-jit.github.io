@@ -237,6 +237,33 @@ nav a:hover { text-decoration: underline; }
   text-decoration: none;
 }
 .header-github:hover { background: var(--warm); }
+.header-actions { display: flex; align-items: center; gap: .5rem; }
+.header-music-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: var(--line);
+  background: var(--accent);
+  color: var(--white);
+  font: 600 .78rem/1.5 var(--mono);
+  cursor: pointer;
+  box-shadow: 1px 1px 0 var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease, background-color 180ms ease;
+}
+.header-music-toggle.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.header-music-toggle:hover { background: var(--warm); color: var(--ink); }
+.header-music-toggle:active { transform: translate(1px, 1px); box-shadow: none; }
 
 .hero {
   --hero-inset: clamp(1.5rem, 4.4vw, 4.5rem);

@@ -81,6 +81,8 @@
     });
   });
   let backgroundScrollFrame = null;
+  let previousScrollY = window.scrollY;
+  let scrollingUp = false;
   function moveBackgroundArtifacts() {
     backgroundScrollFrame = null;
     document.querySelectorAll("[data-depth]").forEach(egg => {
@@ -93,6 +95,8 @@
     });
   }
   window.addEventListener("scroll", () => {
+    scrollingUp = window.scrollY < previousScrollY;
+    previousScrollY = window.scrollY;
     if (reducedMotion.matches || backgroundScrollFrame !== null) return;
     backgroundScrollFrame = requestAnimationFrame(moveBackgroundArtifacts);
   }, { passive: true });
@@ -220,6 +224,9 @@
   const musicTrackName = document.querySelector(".music-track-name");
   const musicProgress = document.querySelector("[data-music-progress]");
   const musicPlay = document.querySelector('[data-music-action="play"]');
+  const headerMusicPause = document.querySelector("#header-music-pause");
+  const aboutSection = document.querySelector("#about");
+  const homeSection = document.querySelector("#hero");
   const currentTime = document.querySelector('[data-music-time="current"]');
   const durationTime = document.querySelector('[data-music-time="duration"]');
   const musicTracks = [
@@ -228,6 +235,8 @@
     "assets/songs/XO%20Tour%20Llif3.mp3"
   ];
   let currentTrack = 0;
+  let musicWantsPlayback = false;
+  let musicRetryTimer = null;
 
   function formatTime(seconds) {
     if (!Number.isFinite(seconds)) return "0:00";
@@ -237,11 +246,31 @@
   function updateMusicControls() {
     musicPlay.textContent = musicPlayer.paused ? "▶" : "Ⅱ";
     musicPlay.setAttribute("aria-label", musicPlayer.paused ? "Play music" : "Pause music");
+    headerMusicPause.textContent = musicPlayer.paused ? "▶" : "Ⅱ";
+    headerMusicPause.setAttribute("aria-label", musicPlayer.paused ? "Play music" : "Pause music");
   }
 
   function getTrackTitle(source) {
     const filename = decodeURIComponent(source.split("/").pop() || source);
     return filename.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function playMusic() {
+    if (!musicWantsPlayback || !musicPlayer.paused) return Promise.resolve(false);
+    const playback = musicPlayer.play();
+    if (!playback) return Promise.resolve(true);
+    return playback.then(() => true).catch(() => {
+      musicStatus.textContent = "";
+      return false;
+    });
+  }
+
+  function retryMusicAfterInterruption() {
+    if (!musicWantsPlayback || !musicPlayer.paused || musicRetryTimer !== null) return;
+    musicRetryTimer = window.setTimeout(() => {
+      musicRetryTimer = null;
+      playMusic();
+    }, 250);
   }
 
   function loadTrack(index, shouldPlay) {
@@ -253,13 +282,17 @@
     currentTime.textContent = "0:00";
     durationTime.textContent = "0:00";
     if (!shouldPlay) return;
-    musicPlayer.play().catch(() => {
-      musicStatus.textContent = "";
-    });
+    musicWantsPlayback = true;
+    playMusic();
   }
 
   musicPlayer.addEventListener("error", () => {
     musicStatus.textContent = "The selected song could not be played.";
+  });
+  musicPlayer.addEventListener("stalled", retryMusicAfterInterruption);
+  musicPlayer.addEventListener("waiting", retryMusicAfterInterruption);
+  musicPlayer.addEventListener("canplay", () => {
+    if (musicWantsPlayback && musicPlayer.paused) playMusic();
   });
   musicPlayer.addEventListener("loadedmetadata", () => {
     durationTime.textContent = formatTime(musicPlayer.duration);
@@ -269,14 +302,32 @@
     musicProgress.value = musicPlayer.duration ? (musicPlayer.currentTime / musicPlayer.duration) * 100 : 0;
   });
   musicPlayer.addEventListener("play", updateMusicControls);
-  musicPlayer.addEventListener("pause", updateMusicControls);
-  musicPlayer.addEventListener("ended", () => loadTrack(currentTrack + 1, true));
+  musicPlayer.addEventListener("pause", () => {
+    updateMusicControls();
+    if (musicWantsPlayback && !musicPlayer.ended) retryMusicAfterInterruption();
+  });
+  musicPlayer.addEventListener("ended", () => {
+    if (musicWantsPlayback) loadTrack(currentTrack + 1, true);
+  });
   musicPlay.addEventListener("click", () => {
     if (musicPlayer.paused) {
-      musicPlayer.play().catch(() => {
-        musicStatus.textContent = "";
-      });
+      musicWantsPlayback = true;
+      playMusic();
     } else {
+      musicWantsPlayback = false;
+      musicPlayer.pause();
+    }
+  });
+  headerMusicPause.addEventListener("click", () => {
+    if (musicPlayer.paused) {
+      musicWantsPlayback = true;
+      playMusic();
+    } else {
+      musicWantsPlayback = false;
+      if (musicRetryTimer !== null) {
+        window.clearTimeout(musicRetryTimer);
+        musicRetryTimer = null;
+      }
       musicPlayer.pause();
     }
   });
@@ -284,29 +335,56 @@
     if (musicPlayer.duration) musicPlayer.currentTime = (Number(musicProgress.value) / 100) * musicPlayer.duration;
   });
   document.querySelector('[data-music-action="previous"]').addEventListener("click", () => {
+    musicWantsPlayback = true;
     loadTrack(currentTrack - 1, true);
   });
   document.querySelector('[data-music-action="next"]').addEventListener("click", () => {
+    musicWantsPlayback = true;
     loadTrack(currentTrack + 1, true);
   });
   currentTrack = Math.floor(Math.random() * musicTracks.length);
   loadTrack(currentTrack, false);
-  function startMusicAfterInteraction() {
-    musicPlayer.play().then(() => {
-      musicStatus.textContent = "";
-      document.removeEventListener("click", startMusicAfterInteraction);
-      document.removeEventListener("touchstart", startMusicAfterInteraction);
-      document.removeEventListener("touchend", startMusicAfterInteraction);
-    }).catch(() => {
-      musicStatus.textContent = "";
+  updateMusicControls();
+  const interactionEvents = ["click", "touchstart", "touchend"];
+  function removeInteractionMusicListeners() {
+    interactionEvents.forEach(eventName => {
+      document.removeEventListener(eventName, startMusicAfterInteraction);
     });
   }
-  musicPlayer.play().catch(() => {
-    musicStatus.textContent = "";
-    document.addEventListener("click", startMusicAfterInteraction);
-    document.addEventListener("touchstart", startMusicAfterInteraction, { passive: true });
-    document.addEventListener("touchend", startMusicAfterInteraction, { passive: true });
+  function startMusicAfterInteraction() {
+    if (musicWantsPlayback) {
+      removeInteractionMusicListeners();
+      return;
+    }
+    musicWantsPlayback = true;
+    playMusic().then(started => {
+      if (started) removeInteractionMusicListeners();
+      else musicWantsPlayback = false;
+    });
+  }
+  interactionEvents.forEach(eventName => {
+    document.addEventListener(eventName, startMusicAfterInteraction, { passive: true });
   });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") retryMusicAfterInterruption();
+  });
+  if ("IntersectionObserver" in window && aboutSection) {
+    let aboutHasBeenEntered = false;
+    const aboutObserver = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      aboutHasBeenEntered = true;
+      headerMusicPause.classList.add("is-visible");
+    }, { threshold: 0.1 });
+    aboutObserver.observe(aboutSection);
+    if (homeSection) {
+      const homeObserver = new IntersectionObserver(([entry]) => {
+        if (aboutHasBeenEntered && scrollingUp && entry.isIntersecting) {
+          headerMusicPause.classList.remove("is-visible");
+        }
+      });
+      homeObserver.observe(homeSection);
+    }
+  }
 
   const interest = document.querySelector(".typed-interest");
   let typing;
