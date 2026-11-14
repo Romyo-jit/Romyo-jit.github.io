@@ -231,7 +231,7 @@
   const durationTime = document.querySelector('[data-music-time="duration"]');
   const musicTracks = [
     "assets/songs/20%20min%20Lil%20uzi.mp3",
-    "assets/songs/Money%20Longer.mp3",
+    "assets/songs/Astrothunder%20Travis%20Scott.mp3",
     "assets/songs/XO%20Tour%20Llif3.mp3",
     "assets/songs/Jeans%202Hollis.mp3",
     "assets/songs/Crush%202hollis.mp3",
