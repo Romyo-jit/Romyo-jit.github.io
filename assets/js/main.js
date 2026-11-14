@@ -236,7 +236,9 @@
     "assets/songs/BLACK%20%26%20YELLOW%20-%20BER7OL1.mp3",
     "assets/songs/Calcium%20-%20Ecco2k.mp3",
     "assets/songs/Crush%20-%202hollis.mp3",
+    "assets/songs/Goldeneye%20007%20-%20BER7OL1.mp3",
     "assets/songs/Jeans%20-%202Hollis.mp3",
+    "assets/songs/Whiplash%20-%202Hollis.mp3",
     "assets/songs/XO%20Tour%20Llif3%20-%20Lil%20Uzi%20Vert.mp3"
   ];
   let currentTrack = 0;
