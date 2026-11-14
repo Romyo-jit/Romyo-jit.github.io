@@ -333,6 +333,7 @@
   if (heroTitle && lastHeroLetter) {
     heroTitle.addEventListener("pointerenter", event => {
       if (reducedMotion.matches || event.pointerType !== "mouse") return;
+      if (heroTitle.classList.contains("is-hover-active")) return;
       heroTitle.classList.remove("is-hover-active");
       void heroTitle.offsetWidth;
       heroTitle.classList.add("is-hover-active");
