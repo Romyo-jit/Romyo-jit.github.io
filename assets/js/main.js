@@ -347,6 +347,7 @@
     let touchEffectTimer;
     element.addEventListener("pointerdown", event => {
       if (reducedMotion.matches || event.pointerType !== "touch") return;
+      if (element.classList.contains("is-touch-active")) return;
       clearTimeout(touchEffectTimer);
       element.classList.remove("is-touch-active");
       void element.offsetWidth;
