@@ -50,11 +50,21 @@
     if (!cursorMotion.matches || reducedMotion.matches || event.pointerType === "touch") return;
     cursorTargetX = event.clientX;
     cursorTargetY = event.clientY;
+    if (!cursor.classList.contains("is-visible")) {
+      cursorX = cursorTargetX;
+      cursorY = cursorTargetY;
+      cursor.style.left = cursorX + "px";
+      cursor.style.top = cursorY + "px";
+    }
     cursor.classList.add("is-visible");
     const target = event.target instanceof Element ? event.target : null;
     cursor.classList.toggle("is-interactive", Boolean(target?.closest("a, button, input, select, textarea, summary")));
+    document.documentElement.classList.add("has-custom-cursor");
   }, { passive: true });
-  function hideCursor() { cursor.classList.remove("is-visible"); }
+  function hideCursor() {
+    cursor.classList.remove("is-visible");
+    document.documentElement.classList.remove("has-custom-cursor");
+  }
   document.documentElement.addEventListener("pointerleave", hideCursor);
   window.addEventListener("blur", hideCursor);
   function updateCursorMotion() {
