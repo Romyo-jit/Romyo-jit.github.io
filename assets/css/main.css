@@ -275,12 +275,11 @@ nav a:hover { text-decoration: underline; }
   min-height: 500px;
   margin-top: clamp(1.75rem, 5vw, 4.75rem);
   background: var(--ink);
-  color: var(--white);
+  color: var(--ink);
 }
 .hero.frame { box-shadow: none; }
-.hero.has-spacetime { color: var(--ink); }
-.has-spacetime .hero-copy { text-shadow: 0 1px 5px rgba(var(--hero-halo-rgb), .32); }
-.has-spacetime .hero-copy::before {
+.hero .hero-copy { text-shadow: 0 1px 5px rgba(var(--hero-halo-rgb), .32); }
+.hero .hero-copy::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -298,20 +297,20 @@ nav a:hover { text-decoration: underline; }
   font-weight: 700;
   letter-spacing: -.065em;
 }
-.has-spacetime h1 .hero-name { color: var(--ink); }
-.has-spacetime h1 .hero-handle { color: var(--accent); }
-.has-spacetime .typed-interest { color: var(--accent); }
-.has-spacetime .music-player {
+.hero h1 .hero-name { color: var(--ink); }
+.hero h1 .hero-handle { color: var(--accent); }
+.hero .typed-interest { color: var(--accent); }
+.hero .music-player {
   background: linear-gradient(110deg, rgba(var(--player-start-rgb), .86), rgba(var(--player-end-rgb), .85));
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   color: var(--ink);
 }
-.has-spacetime .music-player-title { color: var(--accent); }
-.has-spacetime .music-track-name, .has-spacetime .music-player-status { color: var(--ink); }
-.has-spacetime .music-player-signal i { background: var(--accent); }
-.has-spacetime .music-progress input { accent-color: var(--accent); }
-.has-spacetime .music-player-controls button:focus-visible { outline-color: var(--ink); }
+.hero .music-player-title { color: var(--accent); }
+.hero .music-track-name, .hero .music-player-status { color: var(--ink); }
+.hero .music-player-signal i { background: var(--accent); }
+.hero .music-progress input { accent-color: var(--accent); }
+.hero .music-player-controls button:focus-visible { outline-color: var(--ink); }
 
 .hero-copy {
   display: flex;
@@ -549,11 +548,8 @@ h1 .hero-handle {
 .opening > .hero { margin-top: .8rem; flex: 1; }
 
 .hero-image { position: absolute; inset: 0; z-index: -1; background: linear-gradient(135deg, var(--hero-start), var(--hero-middle) 55%, var(--hero-end)); }
-.hero-image img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-.has-spacetime .hero-image img { visibility: hidden; }
 .spacetime-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-field-note {
-  display: none;
   position: absolute;
   left: var(--hero-inset);
   bottom: 1rem;
@@ -562,7 +558,6 @@ h1 .hero-handle {
   letter-spacing: .06em;
   pointer-events: none;
 }
-.has-spacetime .hero-field-note { display: block; }
 .hero-field-note span { color: var(--accent); padding-inline: .25rem; }
 
 .section { margin-block: clamp(3.75rem, 9vw, 7rem); }
